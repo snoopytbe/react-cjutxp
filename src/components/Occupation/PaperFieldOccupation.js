@@ -21,7 +21,6 @@ function ControllerSwitch(props) {
       );
       break;
     case "DatePicker":
-      console.log(defaultValue);
       return (
         <ControllerDatePicker
           {...controllerProperties}

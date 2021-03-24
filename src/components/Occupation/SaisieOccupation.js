@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
+import moment from "moment";
 
 export default function SaisieOccupation(props) {
   const { logeBooking, setLogeBooking, date, setClose } = props;
@@ -24,7 +25,12 @@ export default function SaisieOccupation(props) {
 
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
-    newLogeBooking.push(update);
+    newLogeBooking[0]["exceptionnel"].push({
+      date: moment(update["exceptionnel"][0].date),
+      temple: update["exceptionnel"][0].temple,
+      sallehumide: update["exceptionnel"][0].sallehumide,
+      heure: update["exceptionnel"][0].heure
+    });
     setLogeBooking(newLogeBooking);
     setClose(true);
   };
