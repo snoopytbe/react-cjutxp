@@ -72,7 +72,7 @@ export default function Occupation(props) {
 
   // Mise à jour lors du changement de listeDates
   const calendrierMemoized = React.useMemo(
-    () => <Calendrier logeBooking={[getValues()]} />,
+    () => <Calendrier logeBooking={[getValues()]} setLogeBooking={setLogeBooking} />,
     [listeDates]
   );
 

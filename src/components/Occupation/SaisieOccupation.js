@@ -25,7 +25,7 @@ export default function SaisieOccupation(props) {
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
     newLogeBooking.push(update);
-    //setLogeBooking(newLogeBooking);
+    setLogeBooking(newLogeBooking);
     setClose(true);
   };
 

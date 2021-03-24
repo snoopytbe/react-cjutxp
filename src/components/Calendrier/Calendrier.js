@@ -18,7 +18,7 @@ import { getListeDates } from "../Occupation/occupationMethods";
 import SaisieOccupation from "../Occupation/SaisieOccupation";
 
 export default function Calendrier(props) {
-  const { logeBooking } = props;
+  const { logeBooking, setLogeBooking } = props;
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
@@ -197,6 +197,7 @@ export default function Calendrier(props) {
         <DialogContent>
           <SaisieOccupation
             logeBooking={logeBooking}
+            setLogeBooking={setLogeBooking}
             date={contextData?.date ?? null}
             setClose={handleClose}
           />
