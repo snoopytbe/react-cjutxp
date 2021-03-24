@@ -1,0 +1,29 @@
+
+Modifier un temple ou une salle humide pour une date
+Interdire le dimanche en format récurrent
+Neutraliser la période de Noël
+Vérification des champs saisis : pas de date en doublon, pas d'ajout ou suppression invalide
+Revoir la taille de la police de caractères
+Calendrier plus détaillé
+Export PDF
+Sauvegarde sur un serveur / SQL ?
+KeyboardTimePicker pour le choix de l'heure
+refactoring
+Ajout des autres informations de la loge
+Possibilité de soumettre et valider une réservation
+
+Terminé :
+Ajout de l'heure
+Ajout d'une date spéciale
+Liste d'aperçu d'occupation lors de la saisie
+Calendrier d'aperçu d'occupation lors de la saisie
+Mise en forme améliorée
+Remplacer le bouton ajouter par un champs vide => onChangeHangler partout
+Suppression d'une date spéciale => prise en compte dans le résultat + mise en forme
+Affichage du calendrier des occupations
+Sauvegarde et Import de réservation existante
+Tableau de synthèse des loges
+Saisie de plusieurs loges
+Affichage du calendrier à la demande
+Tableau en français
+Ajouter un menu pour accéder aux différents écrans
