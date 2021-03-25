@@ -15,10 +15,10 @@ import "moment/min/locales.min";
 import estFerie from "./jourFeries";
 import estVacances from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
-import SaisieOccupation from "../Occupation/SaisieOccupation";
+import NouvelleOccupation from "../Occupation/NouvelleOccupation";
 
 export default function Calendrier(props) {
-  const { logeBooking, setLogeBooking } = props;
+  const { logeBooking, setLogeBooking, changeHandler, append, remove } = props;
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
@@ -195,11 +195,14 @@ export default function Calendrier(props) {
         maxWidth="md"
       >
         <DialogContent>
-          <SaisieOccupation
+          <NouvelleOccupation
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
             date={contextData?.date ?? null}
             setClose={handleClose}
+            changeHandler={changeHandler}
+            append={append}
+            remove={remove}
           />
         </DialogContent>
       </Dialog>

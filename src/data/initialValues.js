@@ -11,14 +11,14 @@ export const initialValuesComplete = [
         heure: "20h30"
       },
       {
-        semaine: "3eme",
+        semaine: "3ème",
         jours: "vendredi",
         temple: "Berteaux (ETG)",
         sallehumide: "Les 2 salles humides",
         heure: "20h30"
       },
       {
-        semaine: "5eme",
+        semaine: "5ème",
         jours: "vendredi",
         temple: "Berteaux (ETG)",
         sallehumide: "Salle humide Jardin",
@@ -58,7 +58,7 @@ export const initialValuesComplete = [
         heure: "20h00"
       },
       {
-        semaine: "3eme",
+        semaine: "3ème",
         jours: "mercredi",
         temple: "Ramsay (RDC)",
         sallehumide: "Salle humide Cuisine",

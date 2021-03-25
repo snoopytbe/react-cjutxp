@@ -6,8 +6,7 @@ import format from "date-fns/format";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  Day
+  KeyboardDatePicker
 } from "@material-ui/pickers";
 import { Badge } from "@material-ui/core";
 
@@ -53,8 +52,10 @@ export default function ControllerDatePicker(props) {
             okLabel="Valider"
             cancelLabel="Annuler"
             renderDay={(day, selectedDate, isInCurrentMonth, dayComponent) => {
+              // ne pas supprimer selectedDate !!!
               let isSelected =
-                isInCurrentMonth && highlight && 
+                isInCurrentMonth &&
+                highlight &&
                 highlight.reduce((bef, now) => {
                   return bef || now.date.diff(day, "days") === 0;
                 }, false);

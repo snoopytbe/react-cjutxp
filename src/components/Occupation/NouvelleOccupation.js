@@ -3,36 +3,50 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
-import moment from "moment";
 
-export default function SaisieOccupation(props) {
-  const { logeBooking, setLogeBooking, date, setClose } = props;
+export default function NouvelleOccupation(props) {
+  const {
+    logeBooking,
+    setLogeBooking,
+    date,
+    setClose,
+    changeHandler,
+    append,
+    remove
+  } = props;
 
   const defaultValues = [
     {
       date: date.format(),
-      temple: "",
-      sallehumide: "",
-      heure: ""
+      temple: "Berteaux (ETG)",
+      sallehumide: "Salle humide Cuisine",
+      heure: "20h00"
     }
   ];
+
+  const indexToRemove = () => {
+    let result = null;
+    if (logeBooking.hasOwnProperty("exceptionnel"))
+      result = logeBooking["exceptionnel"].length - 1;
+    return result;
+  };
 
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues
   });
 
-  const changeHandler = () => {};
-
   const onSubmit = update => {
-    let newLogeBooking = logeBooking;
-    newLogeBooking[0]["exceptionnel"].push({
-      date: moment(update["exceptionnel"][0].date),
-      temple: update["exceptionnel"][0].temple,
-      sallehumide: update["exceptionnel"][0].sallehumide,
-      heure: update["exceptionnel"][0].heure
+    remove(logeBooking[0]["exceptionnel"].length - 1);
+
+    let shortcut = update["exceptionnel"][0];
+    append({
+      date: shortcut.date,
+      temple: shortcut.temple,
+      sallehumide: shortcut.sallehumide,
+      heure: shortcut.heure
     });
-    setLogeBooking(newLogeBooking);
     setClose(true);
+    changeHandler();
   };
 
   const listeLoges = logeBooking.map(item => item.loge);
@@ -41,7 +55,7 @@ export default function SaisieOccupation(props) {
     return {
       bookingIndex: index,
       control: control,
-      changeHandler: changeHandler
+      changeHandler: () => {}
     };
   }
 
@@ -56,7 +70,7 @@ export default function SaisieOccupation(props) {
           defaultValue={listeLoges[0]}
           listeChoix={listeLoges}
           required
-          onChangeHandler={changeHandler}
+          onChangeHandler={() => {}}
         />
         <PaperFieldOccupation
           field="exceptionnel"

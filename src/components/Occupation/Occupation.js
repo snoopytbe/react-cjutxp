@@ -47,6 +47,12 @@ export default function Occupation(props) {
 
   // Initialisation lors du chargement
   React.useEffect(() => {
+    setTimeout(() => checkLastField(
+      getValues(),
+      regulierAppend,
+      exceptionnelAppend,
+      suppressionAppend
+    ),1000);
     setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
   }, []);
 
@@ -72,7 +78,15 @@ export default function Occupation(props) {
 
   // Mise à jour lors du changement de listeDates
   const calendrierMemoized = React.useMemo(
-    () => <Calendrier logeBooking={[getValues()]} setLogeBooking={setLogeBooking} />,
+    () => (
+      <Calendrier
+        logeBooking={[getValues()]}
+        setLogeBooking={setLogeBooking}
+        changeHandler={changeHandler}
+        append={exceptionnelAppend}
+        remove={exceptionnelRemove}
+      />
+    ),
     [listeDates]
   );
 

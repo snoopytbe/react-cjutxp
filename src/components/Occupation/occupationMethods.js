@@ -173,7 +173,7 @@ export const checkLastField = (
     return result;
   }
 
-  if (!isEmptyLastField(oneLogeBooking, "regulier"))
+  if (!isEmptyLastField( "regulier"))
     regulierAppend({
       semaine: "",
       jours: "",
@@ -182,9 +182,9 @@ export const checkLastField = (
       heure: ""
     });
 
-  if (!isEmptyLastField(oneLogeBooking, "exceptionnel", "date"))
+  if (!isEmptyLastField( "exceptionnel", "date"))
     exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
 
-  if (!isEmptyLastField(oneLogeBooking, "suppression"))
+  if (!isEmptyLastField( "suppression"))
     suppressionAppend({ date: "" });
 };
