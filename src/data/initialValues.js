@@ -85,5 +85,38 @@ export const initialValuesComplete = [
         date: ""
       }
     ]
+  },
+  {
+    acronyme: "THR",
+    loge: "Test 3",
+    regulier: [
+      {
+        semaine: "1er",
+        jours: "mardi",
+        temple: "Berteaux (ETG)",
+        sallehumide: "Les 2 salles humides",
+        heure: "20h30"
+      },
+      {
+        semaine: "2ème",
+        jours: "vendredi",
+        temple: "Berteaux (ETG)",
+        sallehumide: "Les 2 salles humides",
+        heure: "20h30"
+      }
+    ],
+    exceptionnel: [
+      {
+        date: "2021-02-23T00:00:00.000Z",
+        temple: "Berteaux (ETG)",
+        sallehumide: "Salle humide Jardin",
+        heure: "20h30"
+      }
+    ],
+    suppression: [
+      {
+        date: ""
+      }
+    ]
   }
 ];

@@ -1,7 +1,7 @@
 import * as constantes from "../../data/constantes";
 import moment from "moment";
 import "moment/min/locales.min";
-import { nthDay } from "../Calendrier/vacances";
+import { nthDay, posDateInList } from "../Calendrier/vacances";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la liste des dates des tenues à partir des données de réservation des loges
@@ -77,8 +77,9 @@ export const getListeDates = oneLogeBooking => {
 
       if (maDate.isValid()) {
         // On cherche la position de maDate dans resultWithDelete
-        let pos = resultWithDelete.findIndex(
-          reservation => maDate.diff(reservation.date, "days") === 0
+        let pos = posDateInList(
+          maDate,
+          resultWithDelete.map(item => item.date)
         );
         // On supprime cet élément
         pos >= 0 && resultWithDelete.splice(pos, 1);
@@ -173,7 +174,7 @@ export const checkLastField = (
     return result;
   }
 
-  if (!isEmptyLastField( "regulier"))
+  if (!isEmptyLastField("regulier"))
     regulierAppend({
       semaine: "",
       jours: "",
@@ -182,9 +183,8 @@ export const checkLastField = (
       heure: ""
     });
 
-  if (!isEmptyLastField( "exceptionnel", "date"))
+  if (!isEmptyLastField("exceptionnel", "date"))
     exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
 
-  if (!isEmptyLastField( "suppression"))
-    suppressionAppend({ date: "" });
+  if (!isEmptyLastField("suppression")) suppressionAppend({ date: "" });
 };

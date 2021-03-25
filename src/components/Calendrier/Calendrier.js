@@ -13,12 +13,12 @@ import moment from "moment";
 import TableCell from "../../styles/styleTableCell";
 import "moment/min/locales.min";
 import estFerie from "./jourFeries";
-import estVacances from "./vacances";
+import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
 import NouvelleOccupation from "../Occupation/NouvelleOccupation";
 
 export default function Calendrier(props) {
-  const { logeBooking, setLogeBooking, changeHandler, append, remove } = props;
+  const { logeBooking, setLogeBooking, append, remove } = props;
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
@@ -40,6 +40,21 @@ export default function Calendrier(props) {
     setOpen(true);
   };
 
+  const datesLogeBooking = [];
+  logeBooking.map(item => datesLogeBooking.push(getListeDates(item)));
+
+  function listeLogesUtilisatricesDate(myDate) {
+    let result = [];
+    // On parcourt l'ensemble des loges
+    logeBooking.forEach(
+      (loge, index) =>
+        // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
+        dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
+        result.push(loge.acronyme)
+    );
+    return result;
+  }
+
   function handleDescrClick(event, myDate) {
     event.preventDefault();
     setMousePos({
@@ -47,14 +62,21 @@ export default function Calendrier(props) {
       mouseY: event.clientY - 4
     });
     setActiveMenu(true);
-    setContextData({ date: myDate });
+    setContextData({
+      date: myDate,
+      logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
+    });
+  }
+
+  function txtCelluleOccupation(myDate) {
+    // On créé le texte à partir de la liste des occupations
+    return listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
+      return prev + (prev !== "" ? " / " : "") + act;
+    }, "");
   }
 
   function colonnes(index) {
     const result = [];
-
-    const dateslogeBooking = [];
-    logeBooking.map(item => dateslogeBooking.push(getListeDates(item)));
 
     function classDescription(jour) {
       return jour.isValid()
@@ -66,67 +88,42 @@ export default function Calendrier(props) {
         : "noDate";
     }
 
-    function txtCelluleOccupation(myDate) {
-      return logeBooking.reduce((prev, act, index) => {
-        let ajout = dateslogeBooking[index].reduce((bef, now) => {
-          return bef || now.date.diff(myDate, "days") === 0;
-        }, false)
-          ? act.acronyme
-          : "";
-        let result;
-        if (prev !== "" && ajout !== "") {
-          result = prev + " / " + ajout;
-        } else {
-          result = prev + ajout;
-        }
-        return result;
-      }, "");
-    }
-
     for (let i = 0; i < 11; i++) {
       let myDate = moment(
         `${index + 1}/${i < 4 ? i + 9 : i - 3}/${i < 4 ? annee : annee + 1}`,
         "DD/MM/YYYY"
       );
       myDate.locale("fr-FR");
+      let isValidDate = myDate.isValid();
+      let className = classDescription(myDate);
       result.push(
         // Numéro du jour
-        <React.Fragment>
-          <TableCell
-            className={
-              myDate.isValid()
-                ? estFerie(myDate)
-                  ? "ferie"
-                  : "numerojour"
-                : "noDate"
-            }
-          >
-            {myDate.isValid() && myDate.format("DD")}
+        <>
+          <TableCell className={className}>
+            {isValidDate && myDate.format("DD")}
           </TableCell>
           {/* Initiale du jour */}
-          <TableCell className={classDescription(myDate)}>
-            {myDate.isValid() && myDate.format("dd")[0].toUpperCase()}
+          <TableCell className={className}>
+            {isValidDate && myDate.format("dd")[0].toUpperCase()}
           </TableCell>
-
           {/* Occupation du temple */}
           <TableCell
-            className={"description " + classDescription(myDate)}
+            className={"description " + className}
             onContextMenu={event => handleDescrClick(event, myDate)}
           >
-            {myDate.isValid() && txtCelluleOccupation(myDate)}
+            {isValidDate && txtCelluleOccupation(myDate)}
           </TableCell>
-
           {/* Vacances scolaires */}
           <TableCell
             className={
-              myDate.isValid()
+              isValidDate
                 ? estVacances(myDate, zone)
                   ? "vacances"
-                  : classDescription(myDate) + " bordvacances"
+                  : className + " bordvacances"
                 : "noDate"
             }
           />
-        </React.Fragment>
+        </>
       );
     }
     return result;
@@ -182,7 +179,10 @@ export default function Calendrier(props) {
         <MenuItem disabled onClick={handleDescrClose}>
           Modifier
         </MenuItem>
-        <MenuItem disabled onClick={handleDescrClose}>
+        <MenuItem
+          disabled={contextData?.logesUtilisatrices?.length >= 0}
+          onClick={handleDescrClose}
+        >
           Supprimer
         </MenuItem>
       </Menu>
@@ -199,8 +199,8 @@ export default function Calendrier(props) {
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
             date={contextData?.date ?? null}
+            logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
             setClose={handleClose}
-            changeHandler={changeHandler}
             append={append}
             remove={remove}
           />

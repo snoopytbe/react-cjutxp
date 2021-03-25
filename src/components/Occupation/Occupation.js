@@ -45,25 +45,13 @@ export default function Occupation(props) {
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState([]);
 
-  // Initialisation lors du chargement
+
+// Nécessaire pour le prise en compte des suppressions
   React.useEffect(() => {
-    setTimeout(() => checkLastField(
-      getValues(),
-      regulierAppend,
-      exceptionnelAppend,
-      suppressionAppend
-    ),1000);
-    setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
-  }, []);
+    onChangeHandler();
+  }, [regulierFields, exceptionnelFields, suppressionFields]);
 
-  // Lors de la validation du formulaire mise à jour de LogeBooking
-  const onSubmit = update => {
-    let newLogeBooking = logeBooking;
-    newLogeBooking[id] = update;
-    setLogeBooking(newLogeBooking);
-  };
-
-  const changeHandler = () => {
+  const onChangeHandler = () => {
     let values = getValues();
     // Mise à jour suite au changement
     checkLastField(
@@ -76,13 +64,19 @@ export default function Occupation(props) {
     setTimeout(() => setListeDates(getListeDates(values), 500));
   };
 
+  // Lors de la validation du formulaire mise à jour de LogeBooking
+  const onSubmit = update => {
+    let newLogeBooking = logeBooking;
+    newLogeBooking[id] = update;
+    setLogeBooking(newLogeBooking);
+  };
+
   // Mise à jour lors du changement de listeDates
   const calendrierMemoized = React.useMemo(
     () => (
       <Calendrier
         logeBooking={[getValues()]}
         setLogeBooking={setLogeBooking}
-        changeHandler={changeHandler}
         append={exceptionnelAppend}
         remove={exceptionnelRemove}
       />
@@ -96,7 +90,7 @@ export default function Occupation(props) {
     return {
       bookingIndex: index,
       control: control,
-      changeHandler: changeHandler
+      onChangeHandler: onChangeHandler
     };
   }
 

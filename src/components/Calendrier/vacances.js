@@ -16,6 +16,17 @@ export function nthDay(dt, day, number) {
   return result;
 }
 
+export function posDateInList(dt, liste) {
+  return liste.findIndex(item => dt.diff(item, "days") === 0);
+  /*return liste.reduce((bef, now) => {
+    return bef || now.date.diff(dt, "days") === 0;
+  }, false);*/
+}
+
+export function dateInList(dt, liste) {
+  return posDateInList(dt, liste) >= 0;
+}
+
 function estToussaint(dt) {
   // 3e samedi d'octobre
   var debutVacances = nthDay(new Date(dt.year(), 9, 1), 6, 3);
@@ -72,6 +83,6 @@ function estFevrier(dt, zone) {
   );
 }
 
-export default function estVacances(dt, zone) {
+export function estVacances(dt, zone) {
   return estToussaint(dt) || estNoel(dt) || estFevrier(dt, zone);
 }

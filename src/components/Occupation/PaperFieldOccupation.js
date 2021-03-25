@@ -40,7 +40,7 @@ export default function PaperFieldOccupation(props) {
     bookingIndex,
     field, // nom du champs apparaissant dans le PaperField
     control,
-    changeHandler,
+    onChangeHandler,
     removeHandler,
     listeChoix,
     oneLogeBooking, // objet décrivant la réservation de la loge
@@ -68,7 +68,7 @@ export default function PaperFieldOccupation(props) {
                 name={`${field}[${bookingIndex}].${item.nom}`}
                 dataName={item.nom}
                 control={control}
-                onChangeHandler={changeHandler}
+                onChangeHandler={onChangeHandler}
                 required={bookingIndex + 1 !== oneLogeBooking.length} // seul le dernier champs n'est pas obligatoire
                 label={item.displayName}
                 listeChoix={listeChoix ?? item.liste ?? ""}
