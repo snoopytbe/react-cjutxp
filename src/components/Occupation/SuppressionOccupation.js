@@ -6,7 +6,14 @@ import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 
 // Fenetre permettant de créer une nouvelle occupation des locaux
 export default function NouvelleOccupation(props) {
-  const { logeBooking, date, setClose, append, remove, logesUtilisatrices } = props;
+  const {
+    logeBooking,
+    date,
+    setClose,
+    append,
+    remove,
+    logesUtilisatrices
+  } = props;
 
   const defaultValues = [
     {
@@ -23,10 +30,10 @@ export default function NouvelleOccupation(props) {
 
   const onSubmit = update => {
     // On supprime le dernier champs qui est normalement vide
-    remove(logeBooking[0]["exceptionnel"].length - 1);
+    remove(logeBooking[0]["suppression"].length - 1);
 
     // Puis on ajoute les nouvelles données
-    let shortcut = update["exceptionnel"][0];
+    let shortcut = update["suppression"][0];
     append({
       date: shortcut.date,
       temple: shortcut.temple,
@@ -39,12 +46,12 @@ export default function NouvelleOccupation(props) {
   };
 
   // Liste des loges
-  const listeLoges = logeBooking.map(item => item.loge);
+  const listeLoges = logesUtilisatrices;
 
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">Nouvelle réservation</Typography>
+        <Typography variant="h6">Supprimer une réservation</Typography>
         <ControllerSelect
           name="Loge"
           label="Loge"
@@ -55,7 +62,7 @@ export default function NouvelleOccupation(props) {
           onChangeHandler={() => {}}
         />
         <PaperFieldOccupation
-          field="exceptionnel"
+          field="suppression"
           oneLogeBooking={defaultValues}
           bookingIndex={0}
           control={control}

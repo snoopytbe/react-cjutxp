@@ -24,12 +24,17 @@ export default function Calendrier(props) {
     mouseX: null,
     mouseY: null
   });
-  const [activeMenu, setActiveMenu] = React.useState(false);
+  const [activeMenu, setActiveMenu] = React.useState({
+    general: false,
+    add: false,
+    del: false,
+    modify: false
+  });
   const [contextData, setContextData] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
   const handleDescrClose = () => {
-    setActiveMenu(false);
+    setActiveMenu({ general: false });
   };
 
   const handleClose = () => {
@@ -61,7 +66,12 @@ export default function Calendrier(props) {
       mouseX: event.clientX - 2,
       mouseY: event.clientY - 4
     });
-    setActiveMenu(true);
+    setActiveMenu({
+      general: true,
+      add: true,
+      del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0
+    });
+    console.log(activeMenu);
     setContextData({
       date: myDate,
       logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
@@ -98,7 +108,7 @@ export default function Calendrier(props) {
       let className = classDescription(myDate);
       result.push(
         // Numéro du jour
-        <>
+        <React.Fragment key={"colonne" + index + "i" + i}>
           <TableCell className={className}>
             {isValidDate && myDate.format("DD")}
           </TableCell>
@@ -123,17 +133,22 @@ export default function Calendrier(props) {
                 : "noDate"
             }
           />
-        </>
+        </React.Fragment>
       );
     }
     return result;
   }
 
+  React.useEffect(() => {}, [contextData]);
+
   React.useEffect(() => {
     let newLigne = [];
 
     for (let i = 0; i < 31; i++)
-      newLigne = [...newLigne, <TableRow>{colonnes(i)}</TableRow>];
+      newLigne = [
+        ...newLigne,
+        <TableRow key={"colonne" + i}>{colonnes(i)}</TableRow>
+      ];
 
     setLignes(newLigne);
   }, [logeBooking]);
@@ -152,7 +167,7 @@ export default function Calendrier(props) {
               </TableCell>
             </TableRow>
             <TableRow>
-              {mois.map((item, index) => (
+              {mois.map(item => (
                 <React.Fragment key={item.id}>
                   <TableCell className="mois" colSpan={4}>
                     {item.nom}
@@ -166,7 +181,7 @@ export default function Calendrier(props) {
       </TableContainer>
       <Menu
         keepMounted
-        open={activeMenu}
+        open={activeMenu.general}
         onClose={handleDescrClose}
         anchorReference="anchorPosition"
         anchorPosition={
@@ -175,21 +190,20 @@ export default function Calendrier(props) {
             : undefined
         }
       >
-        <MenuItem onClick={handleAjout}>Ajouter</MenuItem>
-        <MenuItem disabled onClick={handleDescrClose}>
+        <MenuItem disabled={!activeMenu.add} onClick={handleAjout}>
+          Ajouter
+        </MenuItem>
+        <MenuItem disabled={!activeMenu.modify} onClick={handleDescrClose}>
           Modifier
         </MenuItem>
-        <MenuItem
-          disabled={contextData?.logesUtilisatrices?.length >= 0}
-          onClick={handleDescrClose}
-        >
+        <MenuItem disabled={!activeMenu.del} onClick={handleDescrClose}>
           Supprimer
         </MenuItem>
       </Menu>
       <Dialog
         open={open}
         onClose={handleClose}
-        onRendered={() => setActiveMenu(false)}
+        onRendered={() => setActiveMenu({ general: false })}
         aria-labelledby="form-dialog-title"
         fullWidth
         maxWidth="md"
