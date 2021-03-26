@@ -18,9 +18,6 @@ export function nthDay(dt, day, number) {
 
 export function posDateInList(dt, liste) {
   return dt?.isValid() ? liste.findIndex(item => dt.diff(item, "days") === 0) : -1
-  /*return liste.reduce((bef, now) => {
-    return bef || now.date.diff(dt, "days") === 0;
-  }, false);*/
 }
 
 export function dateInList(dt, liste) {

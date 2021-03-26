@@ -3,9 +3,10 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
+import { getOccupationLogeDate } from "./occupationMethods";
 
-// Fenetre permettant de créer une nouvelle occupation des locaux
-export default function NouvelleOccupation(props) {
+// Fenetre permettant de supprimer une occupation des locaux
+export default function SuppressionOccupation(props) {
   const {
     logeBooking,
     date,
@@ -17,14 +18,14 @@ export default function NouvelleOccupation(props) {
 
   const defaultValues = [
     {
-      date: date.format(),
+      date: date.format("dddd DD/MM/YYYY"),
       temple: "Berteaux (ETG)",
       sallehumide: "Salle humide Cuisine",
       heure: "20h30"
     }
   ];
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, getValues, setValue } = useForm({
     defaultValues: defaultValues
   });
 
@@ -45,21 +46,37 @@ export default function NouvelleOccupation(props) {
     setClose(true);
   };
 
+  const logeChangeHandler = e => {
+    let occupation = getOccupationLogeDate(
+      logeBooking,
+      getValues("loge"),
+      date
+    );
+    setValue("suppression[0].temple", occupation?.temple ?? "Berteaux (ETG)");
+    /*{
+      date: date.format(),
+      temple: "Berteaux (ETG)",
+      sallehumide: "Salle humide Cuisine",
+      heure: "20h30"
+    }
+  ];*/
+  };
+
   // Liste des loges
-  const listeLoges = logesUtilisatrices;
+  const listeLoges = logesUtilisatrices.map(loge => loge.loge) ?? [];
 
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">Supprimer une réservation</Typography>
         <ControllerSelect
-          name="Loge"
+          name="loge"
           label="Loge"
           control={control}
           defaultValue={listeLoges[0]}
           listeChoix={listeLoges}
           required
-          onChangeHandler={() => {}}
+          onChangeHandler={logeChangeHandler}
         />
         <PaperFieldOccupation
           field="suppression"
@@ -67,6 +84,7 @@ export default function NouvelleOccupation(props) {
           bookingIndex={0}
           control={control}
           onChangeHandler={() => {}}
+          listeChoix={[date.format("dddd DD/MM/YYYY")]}
         />
         <Typography variant="h6" />
         <Button variant="contained" color="primary" type="submit">

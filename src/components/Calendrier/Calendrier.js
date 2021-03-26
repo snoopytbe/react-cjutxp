@@ -16,6 +16,7 @@ import estFerie from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
 import NouvelleOccupation from "../Occupation/NouvelleOccupation";
+import SuppressionOccupation from "../Occupation/SuppressionOccupation";
 
 export default function Calendrier(props) {
   const { logeBooking, setLogeBooking, append, remove } = props;
@@ -55,7 +56,7 @@ export default function Calendrier(props) {
       (loge, index) =>
         // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
         dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
-        result.push(loge.acronyme)
+        result.push({ acronyme: loge.acronyme, loge: loge.loge })
     );
     return result;
   }
@@ -71,7 +72,6 @@ export default function Calendrier(props) {
       add: true,
       del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0
     });
-    console.log(activeMenu);
     setContextData({
       date: myDate,
       logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
@@ -81,7 +81,7 @@ export default function Calendrier(props) {
   function txtCelluleOccupation(myDate) {
     // On créé le texte à partir de la liste des occupations
     return listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
-      return prev + (prev !== "" ? " / " : "") + act;
+      return prev + (prev !== "" ? " / " : "") + act.acronyme;
     }, "");
   }
 
@@ -138,8 +138,6 @@ export default function Calendrier(props) {
     }
     return result;
   }
-
-  React.useEffect(() => {}, [contextData]);
 
   React.useEffect(() => {
     let newLigne = [];
@@ -209,7 +207,7 @@ export default function Calendrier(props) {
         maxWidth="md"
       >
         <DialogContent>
-          <NouvelleOccupation
+          <SuppressionOccupation
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
             date={contextData?.date ?? null}

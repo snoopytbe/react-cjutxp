@@ -93,8 +93,8 @@ export const initialValuesComplete = [
       {
         semaine: "1er",
         jours: "mardi",
-        temple: "Berteaux (ETG)",
-        sallehumide: "Les 2 salles humides",
+        temple: "Ramsay (RDC)",
+        sallehumide: "Salle humide Jardin",
         heure: "20h30"
       },
       {
