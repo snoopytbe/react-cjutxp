@@ -18,7 +18,7 @@ export default function SuppressionOccupation(props) {
 
   const defaultValues = [
     {
-      date: date.format("dddd DD/MM/YYYY"),
+      date: date.format(),
       temple: "Berteaux (ETG)",
       sallehumide: "Salle humide Cuisine",
       heure: "20h30"
@@ -31,10 +31,10 @@ export default function SuppressionOccupation(props) {
 
   const onSubmit = update => {
     // On supprime le dernier champs qui est normalement vide
-    remove(logeBooking[0]["suppression"].length - 1);
+    remove(logeBooking[0]["exceptionnel"].length - 1);
 
     // Puis on ajoute les nouvelles données
-    let shortcut = update["suppression"][0];
+    let shortcut = update["exceptionnel"][0];
     append({
       date: shortcut.date,
       temple: shortcut.temple,
@@ -52,15 +52,17 @@ export default function SuppressionOccupation(props) {
       getValues("loge"),
       date
     );
-    setValue("suppression[0].temple", occupation?.temple ?? "Berteaux (ETG)");
-    /*{
-      date: date.format(),
-      temple: "Berteaux (ETG)",
-      sallehumide: "Salle humide Cuisine",
-      heure: "20h30"
-    }
-  ];*/
+    setValue("exceptionnel[0].temple", occupation?.temple ?? "Berteaux (ETG)");
+    setValue(
+      "exceptionnel[0].sallehumide",
+      occupation?.sallehumide ?? "Salle humide Cuisine"
+    );
+    setValue("exceptionnel[0].heure", occupation?.heure ?? "20h30");
   };
+
+  React.useEffect(() => {
+    logeChangeHandler();
+  }, []);
 
   // Liste des loges
   const listeLoges = logesUtilisatrices.map(loge => loge.loge) ?? [];
@@ -68,7 +70,7 @@ export default function SuppressionOccupation(props) {
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">Supprimer une réservation</Typography>
+        <Typography variant="h6">Modifier une réservation</Typography>
         <ControllerSelect
           name="loge"
           label="Loge"
@@ -79,12 +81,11 @@ export default function SuppressionOccupation(props) {
           onChangeHandler={logeChangeHandler}
         />
         <PaperFieldOccupation
-          field="suppression"
+          field="exceptionnel"
           oneLogeBooking={defaultValues}
           bookingIndex={0}
           control={control}
           onChangeHandler={() => {}}
-          listeChoix={[date.format("dddd DD/MM/YYYY")]}
         />
         <Typography variant="h6" />
         <Button variant="contained" color="primary" type="submit">
