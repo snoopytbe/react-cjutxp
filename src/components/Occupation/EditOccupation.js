@@ -6,22 +6,23 @@ import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import { getOccupationLogeDate } from "./occupationMethods";
 
 // Fenetre permettant de supprimer une occupation des locaux
-export default function SuppressionOccupation(props) {
+export default function EditOccupation(props) {
   const {
     logeBooking,
     date,
     setClose,
     append,
     remove,
-    logesUtilisatrices
+    logesUtilisatrices,
+    typeEdit
   } = props;
 
   const defaultValues = [
     {
       date: date.format(),
-      temple: "Berteaux (ETG)",
-      sallehumide: "Salle humide Cuisine",
-      heure: "20h30"
+      temple: "",
+      sallehumide: "",
+      heure: ""
     }
   ];
 
@@ -46,26 +47,30 @@ export default function SuppressionOccupation(props) {
     setClose(true);
   };
 
+  // Liste des loges
+  var listeLoges = [];
+  switch (typeEdit) {
+    case "modification":
+      listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
+      break;
+    default:
+      listeLoges = logeBooking?.map(item => item.loge) ?? [];
+  }
+
   const logeChangeHandler = e => {
     let occupation = getOccupationLogeDate(
       logeBooking,
       getValues("loge"),
       date
     );
-    setValue("exceptionnel[0].temple", occupation?.temple ?? "Berteaux (ETG)");
-    setValue(
-      "exceptionnel[0].sallehumide",
-      occupation?.sallehumide ?? "Salle humide Cuisine"
-    );
-    setValue("exceptionnel[0].heure", occupation?.heure ?? "20h30");
+    setValue("exceptionnel[0].temple", occupation?.temple ?? "");
+    setValue("exceptionnel[0].sallehumide", occupation?.sallehumide ?? "");
+    setValue("exceptionnel[0].heure", occupation?.heure ?? "");
   };
 
   React.useEffect(() => {
     logeChangeHandler();
   }, []);
-
-  // Liste des loges
-  const listeLoges = logesUtilisatrices.map(loge => loge.loge) ?? [];
 
   return (
     <div style={{ flexGrow: 1 }}>

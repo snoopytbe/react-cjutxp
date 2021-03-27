@@ -72,7 +72,12 @@ export default function MyDrawer({ open, onClose, onItemClick }) {
         />
         <Route
           path="/Calendrier"
-          render={() => <Calendrier logeBooking={logeBooking} />}
+          render={() => (
+            <Calendrier
+              logeBooking={logeBooking}
+              setLogeBooking={setLogeBooking}
+            />
+          )}
         />
       </Switch>
     </BrowserRouter>

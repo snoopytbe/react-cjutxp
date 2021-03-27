@@ -3,10 +3,17 @@ import moment from "moment";
 import "moment/min/locales.min";
 import { nthDay, posDateInList } from "../Calendrier/vacances";
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retourne la réservation d'un loge pour une date donnée
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const getOccupationLogeDate = (logeBooking, loge, date) => {
+  // On recherche les réservations de la loge
   let foundLogeBooking = logeBooking.find(item => item.loge === loge);
+  // Les dates de réservation de la loge
   let listeDates = getListeDates(foundLogeBooking);
+  // On recherche la position de la date recherchée dans la liste des dates
   let index = posDateInList(date, listeDates.map(item => item.date));
+  // Puis on donne la reservation correspondante
   return listeDates[index]?.reservation ?? null;
 };
 
@@ -22,7 +29,7 @@ export const getListeDates = oneLogeBooking => {
 
   var maDate = moment();
 
-  if (oneLogeBooking.hasOwnProperty("regulier")) {
+  if (oneLogeBooking?.hasOwnProperty("regulier")) {
     oneLogeBooking.regulier.forEach(reservation => {
       // on s'assure que les données sont bien remplies
       if (reservation.semaine) {
@@ -51,7 +58,7 @@ export const getListeDates = oneLogeBooking => {
   }
 
   // Pour les réservations exceptionnelles on ajoute simplement chacune des dates
-  if (oneLogeBooking.hasOwnProperty("exceptionnel")) {
+  if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
     oneLogeBooking.exceptionnel.forEach(exceptionnel => {
       //
       if (exceptionnel.temple) {
@@ -74,7 +81,7 @@ export const getListeDates = oneLogeBooking => {
   // On enlève les dates supprimées
   let resultWithDelete = resultSansDoublon;
 
-  if (oneLogeBooking.hasOwnProperty("suppression")) {
+  if (oneLogeBooking?.hasOwnProperty("suppression")) {
     oneLogeBooking.suppression.forEach(suppression => {
       // Conversion de la date stockée en moment
       let dateSansJour = suppression.date.slice(

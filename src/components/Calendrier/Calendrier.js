@@ -16,7 +16,7 @@ import estFerie from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
 import NouvelleOccupation from "../Occupation/NouvelleOccupation";
-import SuppressionOccupation from "../Occupation/SuppressionOccupation";
+import EditOccupation from "../Occupation/EditOccupation";
 
 export default function Calendrier(props) {
   const { logeBooking, setLogeBooking, append, remove } = props;
@@ -33,6 +33,7 @@ export default function Calendrier(props) {
   });
   const [contextData, setContextData] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const [typeEdit, setTypeEdit] = React.useState(false);
 
   const handleDescrClose = () => {
     setActiveMenu({ general: false });
@@ -42,9 +43,15 @@ export default function Calendrier(props) {
     setOpen(false);
   };
 
-  const handleAjout = () => {
+  const handleAdd = () => {
+    setTypeEdit("add")
     setOpen(true);
   };
+
+  const handleModify = () => {
+    setTypeEdit("modify")
+    setOpen(true);
+  };  
 
   const datesLogeBooking = [];
   logeBooking.map(item => datesLogeBooking.push(getListeDates(item)));
@@ -52,7 +59,7 @@ export default function Calendrier(props) {
   function listeLogesUtilisatricesDate(myDate) {
     let result = [];
     // On parcourt l'ensemble des loges
-    logeBooking.forEach(
+    logeBooking?.forEach(
       (loge, index) =>
         // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
         dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
@@ -70,6 +77,7 @@ export default function Calendrier(props) {
     setActiveMenu({
       general: true,
       add: true,
+      modify: listeLogesUtilisatricesDate(myDate).length ?? null >= 0,
       del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0
     });
     setContextData({
@@ -188,10 +196,10 @@ export default function Calendrier(props) {
             : undefined
         }
       >
-        <MenuItem disabled={!activeMenu.add} onClick={handleAjout}>
+        <MenuItem disabled={!activeMenu.add} onClick={handleAdd}>
           Ajouter
         </MenuItem>
-        <MenuItem disabled={!activeMenu.modify} onClick={handleDescrClose}>
+        <MenuItem disabled={!activeMenu.modify} onClick={handleModify}>
           Modifier
         </MenuItem>
         <MenuItem disabled={!activeMenu.del} onClick={handleDescrClose}>
@@ -207,12 +215,13 @@ export default function Calendrier(props) {
         maxWidth="md"
       >
         <DialogContent>
-          <SuppressionOccupation
+          <EditOccupation
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
             date={contextData?.date ?? null}
             logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
             setClose={handleClose}
+            typeEdit={typeEdit}
             append={append}
             remove={remove}
           />
