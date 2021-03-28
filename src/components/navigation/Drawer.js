@@ -58,7 +58,7 @@ export default function MyDrawer({ open, onClose, onItemClick }) {
         <Route
           exact
           path="/"
-          render={() => <TableauSynthese logeBooking={logeBooking} />}
+          render={() => <TableauSynthese logeBooking={logeBooking} setLogeBooking={setLogeBooking}/>}
         />
         <Route
           path="/Occupation/:id"

@@ -4,6 +4,13 @@ import "moment/min/locales.min";
 import { nthDay, posDateInList } from "../Calendrier/vacances";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retourne l'id d'une loge
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export const getIdLoge = (logeBooking, loge) => {
+  return logeBooking?.findIndex(item => item.loge === loge);
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la réservation d'un loge pour une date donnée
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const getOccupationLogeDate = (logeBooking, loge, date) => {
@@ -130,7 +137,7 @@ export const texteReservations = oneLogeBooking => {
     );
   }
 
-  if (oneLogeBooking.hasOwnProperty("regulier")) {
+  if (oneLogeBooking?.hasOwnProperty("regulier")) {
     var resultObject = {};
 
     // Le texte indiquant les numéros de semaine est généré ici. Les réservations partageant le même index
@@ -154,6 +161,12 @@ export const texteReservations = oneLogeBooking => {
       result = before + resultObject[key] + " " + key;
     });
   }
+
+  if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
+    result += "\nRéservations exceptionnelles :\n";
+    oneLogeBooking.exceptionnel.forEach(item => {});
+  }
+
   return result;
 };
 

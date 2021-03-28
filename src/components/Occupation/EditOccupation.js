@@ -3,16 +3,16 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
-import { getOccupationLogeDate } from "./occupationMethods";
+import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
   const {
     logeBooking,
+    setLogeBooking,
+    id = 0,
     date,
     setClose,
-    append,
-    remove,
     logesUtilisatrices,
     typeEdit
   } = props;
@@ -30,18 +30,29 @@ export default function EditOccupation(props) {
     defaultValues: defaultValues
   });
 
+  var localLogeBooking = id === -1 ? logeBooking : [logeBooking[id]];
+
   const onSubmit = update => {
+    var newLogeBooking = logeBooking;
+
+    // On récupère l'id de la loge modifiée
+    var idModified = getIdLoge(logeBooking, update.loge);
+
     // On supprime le dernier champs qui est normalement vide
-    remove(logeBooking[0]["exceptionnel"].length - 1);
+    newLogeBooking[idModified]["exceptionnel"].length =
+      logeBooking[idModified]["exceptionnel"].length - 1;
 
     // Puis on ajoute les nouvelles données
     let shortcut = update["exceptionnel"][0];
-    append({
+    newLogeBooking[idModified]["exceptionnel"][length] = {
       date: shortcut.date,
       temple: shortcut.temple,
       sallehumide: shortcut.sallehumide,
       heure: shortcut.heure
-    });
+    };
+
+    //Sauvegarde
+    setLogeBooking(newLogeBooking);
 
     // Fermeture de la fenêtre
     setClose(true);
@@ -50,11 +61,11 @@ export default function EditOccupation(props) {
   // Liste des loges
   var listeLoges = [];
   switch (typeEdit) {
-    case "modification":
+    case "modify":
       listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
       break;
     default:
-      listeLoges = logeBooking?.map(item => item.loge) ?? [];
+      listeLoges = localLogeBooking?.map(item => item.loge) ?? [];
   }
 
   const logeChangeHandler = e => {

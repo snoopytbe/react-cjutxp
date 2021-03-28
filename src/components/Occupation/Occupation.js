@@ -45,6 +45,10 @@ export default function Occupation(props) {
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState([]);
 
+const loadModifiedLogeBooking = () => {
+
+}
+
 
 // Nécessaire pour le prise en compte des suppressions
   React.useEffect(() => {
@@ -75,10 +79,9 @@ export default function Occupation(props) {
   const calendrierMemoized = React.useMemo(
     () => (
       <Calendrier
-        logeBooking={[getValues()]}
+        logeBooking={logeBooking}
         setLogeBooking={setLogeBooking}
-        append={exceptionnelAppend}
-        remove={exceptionnelRemove}
+        id={id}
       />
     ),
     [listeDates]

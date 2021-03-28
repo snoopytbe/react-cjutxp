@@ -27,3 +27,18 @@ Saisie de plusieurs loges
 Affichage du calendrier à la demande
 Tableau en français
 Ajouter un menu pour accéder aux différents écrans
+
+
+Brainstorming
+"récurrente" : Réservations récurrentes 
+-> créer, modifier(index), supprimer(index) + formulaire
+-> charger, sauver
+-> obtenir la liste des dates pour une loge
+-> obtenir la liste des loges pour une date
+-> Pour chaque date du calendrier de réservations récurrentes, modification ponctuelle 
+    = "modification" : modification de réservation
+      * créer, modifier, supprimer + formulaire
+    = "annulation" : annulation de réservation
+      * créer, supprimer + formulaire 
+"supplémentaire" : Réservation supplémentaire (hors calendrier de réservations récurrentes)
+-> créer, modifier, supprimer + formulaire

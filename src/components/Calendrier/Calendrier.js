@@ -15,11 +15,10 @@ import "moment/min/locales.min";
 import estFerie from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
-import NouvelleOccupation from "../Occupation/NouvelleOccupation";
 import EditOccupation from "../Occupation/EditOccupation";
 
 export default function Calendrier(props) {
-  const { logeBooking, setLogeBooking, append, remove } = props;
+  const { logeBooking, setLogeBooking, id = -1 } = props;
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
@@ -44,22 +43,23 @@ export default function Calendrier(props) {
   };
 
   const handleAdd = () => {
-    setTypeEdit("add")
+    setTypeEdit("add");
     setOpen(true);
   };
 
   const handleModify = () => {
-    setTypeEdit("modify")
+    setTypeEdit("modify");
     setOpen(true);
-  };  
+  };
 
-  const datesLogeBooking = [];
-  logeBooking.map(item => datesLogeBooking.push(getListeDates(item)));
+  var localLogeBooking = id === -1 ? logeBooking : [logeBooking[id]];
+
+  const datesLogeBooking = localLogeBooking.map(item => getListeDates(item));
 
   function listeLogesUtilisatricesDate(myDate) {
     let result = [];
     // On parcourt l'ensemble des loges
-    logeBooking?.forEach(
+    localLogeBooking?.forEach(
       (loge, index) =>
         // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
         dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
@@ -218,12 +218,11 @@ export default function Calendrier(props) {
           <EditOccupation
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
+            id={id}
             date={contextData?.date ?? null}
             logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
             setClose={handleClose}
             typeEdit={typeEdit}
-            append={append}
-            remove={remove}
           />
         </DialogContent>
       </Dialog>

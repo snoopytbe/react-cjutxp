@@ -12,7 +12,7 @@ const theme = createMuiTheme(frFR);
 export default function TableauSynthese(props) {
   //const [logeBooking, setlogeBooking] = useStateWithLocalStorage("logeBooking", initialValues);
   var history = useHistory();
-  const { logeBooking } = props;
+  const { logeBooking, setLogeBooking } = props;
 
   const columns = [
     {
