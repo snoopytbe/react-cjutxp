@@ -33,6 +33,7 @@ export default function Calendrier(props) {
   const [contextData, setContextData] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [typeEdit, setTypeEdit] = React.useState(false);
+  const [update, setUpdate] = React.useState(false);
 
   const handleDescrClose = () => {
     setActiveMenu({ general: false });
@@ -148,6 +149,9 @@ export default function Calendrier(props) {
   }
 
   React.useEffect(() => {
+    setUpdate(false);
+    localLogeBooking = id === -1 ? logeBooking : [logeBooking[id]];
+
     let newLigne = [];
 
     for (let i = 0; i < 31; i++)
@@ -157,7 +161,7 @@ export default function Calendrier(props) {
       ];
 
     setLignes(newLigne);
-  }, [logeBooking]);
+  }, [update]);
 
   return (
     <>
@@ -174,7 +178,7 @@ export default function Calendrier(props) {
             </TableRow>
             <TableRow>
               {mois.map(item => (
-                <React.Fragment key={item.id}>
+                <React.Fragment key={item.nom}>
                   <TableCell className="mois" colSpan={4}>
                     {item.nom}
                   </TableCell>
@@ -217,7 +221,10 @@ export default function Calendrier(props) {
         <DialogContent>
           <EditOccupation
             logeBooking={logeBooking}
-            setLogeBooking={setLogeBooking}
+            setLogeBooking={value => {
+              setLogeBooking(value);
+              setUpdate(true);
+            }}
             id={id}
             date={contextData?.date ?? null}
             logesUtilisatrices={contextData?.logesUtilisatrices ?? null}

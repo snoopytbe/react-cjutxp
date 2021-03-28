@@ -125,16 +125,9 @@ export const texteReservations = oneLogeBooking => {
   // Texte à afficher pour chaque jour, heure, temple et sallehumide
   // Permet également de générer un index par jour, heure, temple et sallehumide
   function indexGenerator(item) {
-    return (
-      item.jours +
-      " (" +
-      item.heure +
-      ", " +
-      item.temple +
-      ", " +
-      item.sallehumide +
-      ")"
-    );
+    return `${item.jours ?? ""} (${item.heure}, ${item.temple}, ${
+      item.sallehumide
+    })`;
   }
 
   if (oneLogeBooking?.hasOwnProperty("regulier")) {
@@ -164,11 +157,42 @@ export const texteReservations = oneLogeBooking => {
 
   if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
     result += "\nRéservations exceptionnelles :\n";
-    oneLogeBooking.exceptionnel.forEach(item => {});
+    oneLogeBooking.exceptionnel.forEach((item, index) => {
+      if (item.temple) {
+        result +=
+          moment(item.date)
+            .locale("fr-FR")
+            .format("dddd DD/MM/YYYY") + indexGenerator(item);
+        result += index < oneLogeBooking.exceptionnel.length - 1 ? ", " : "";
+      }
+    });
   }
 
   return result;
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cette fonction permet de regarder si le dernier champs est vide
+// retourne un booléen
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export function isEmptyLastField(oneLogeBooking, fieldName, exception) {
+  var result = false;
+
+  if (oneLogeBooking.hasOwnProperty(fieldName)) {
+    // lastField est le dernier champs du tableau
+    let fields = oneLogeBooking[fieldName];
+    let lastField = fields[fields.length - 1];
+    // Le résultat est à true si tous les champs, sauf exception, sont soit égaux à "" soit undefined
+    result = true;
+    for (let value in lastField) {
+      if (value !== exception)
+        result =
+          result &&
+          (lastField[value] === "" || typeof lastField[value] === "undefined");
+    }
+  }
+  return result;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cette fonction permet d'assurer que le formulaire comporte toujours une dernière entrée vide
@@ -179,29 +203,7 @@ export const checkLastField = (
   exceptionnelAppend,
   suppressionAppend
 ) => {
-  // Cette fonction permet de regarder si le dernier champs est vide
-  // retourne un booléen
-  function isEmptyLastField(fieldName, exception) {
-    var result = false;
-
-    if (oneLogeBooking.hasOwnProperty(fieldName)) {
-      // lastField est le dernier champs du tableau
-      let fields = oneLogeBooking[fieldName];
-      let lastField = fields[fields.length - 1];
-      // Le résultat est à true si tous les champs, sauf exception, sont soit égaux à "" soit undefined
-      result = true;
-      for (let value in lastField) {
-        if (value !== exception)
-          result =
-            result &&
-            (lastField[value] === "" ||
-              typeof lastField[value] === "undefined");
-      }
-    }
-    return result;
-  }
-
-  if (!isEmptyLastField("regulier"))
+  if (!isEmptyLastField(oneLogeBooking, "regulier"))
     regulierAppend({
       semaine: "",
       jours: "",
@@ -210,8 +212,9 @@ export const checkLastField = (
       heure: ""
     });
 
-  if (!isEmptyLastField("exceptionnel", "date"))
+  if (!isEmptyLastField(oneLogeBooking, "exceptionnel", "date"))
     exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
 
-  if (!isEmptyLastField("suppression")) suppressionAppend({ date: "" });
+  if (!isEmptyLastField(oneLogeBooking, "suppression"))
+    suppressionAppend({ date: "" });
 };

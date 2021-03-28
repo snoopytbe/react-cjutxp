@@ -11,7 +11,7 @@ export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
 
   // Création du formulaire initialisé avec les données de la loge
-  const { control, handleSubmit, register, getValues } = useForm({
+  const { control, handleSubmit, register, getValues, setValue } = useForm({
     defaultValues: logeBooking[id]
   });
 
@@ -45,15 +45,10 @@ export default function Occupation(props) {
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState([]);
 
-const loadModifiedLogeBooking = () => {
-
-}
-
-
-// Nécessaire pour le prise en compte des suppressions
+  // Nécessaire pour le prise en compte des suppressions
   React.useEffect(() => {
     onChangeHandler();
-  }, [regulierFields, exceptionnelFields, suppressionFields]);
+  }, [exceptionnelFields]);
 
   const onChangeHandler = () => {
     let values = getValues();
@@ -68,6 +63,15 @@ const loadModifiedLogeBooking = () => {
     setTimeout(() => setListeDates(getListeDates(values), 500));
   };
 
+  const loadValues = values => {
+    let shortcut = values[id];
+    setValue("loge", shortcut.loge);
+    setValue("acronyme", shortcut.acronyme);
+    for (let i = exceptionnelFields.length - 1; i--; i >= 0)
+      exceptionnelRemove(i);
+    shortcut["exceptionnel"].forEach(item => exceptionnelAppend(item));
+  };
+
   // Lors de la validation du formulaire mise à jour de LogeBooking
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
@@ -80,7 +84,10 @@ const loadModifiedLogeBooking = () => {
     () => (
       <Calendrier
         logeBooking={logeBooking}
-        setLogeBooking={setLogeBooking}
+        setLogeBooking={value => {
+          setLogeBooking(value);
+          loadValues(value);
+        }}
         id={id}
       />
     ),
@@ -133,13 +140,14 @@ const loadModifiedLogeBooking = () => {
 
         {regulierFields.map((item, index) => {
           return (
-            <PaperFieldOccupation
-              key={item.id}
-              field="regulier"
-              oneLogeBooking={regulierFields}
-              removeHandler={regulierRemove}
-              {...commonProps(index)}
-            />
+            <React.Fragment key={item.id}>
+              <PaperFieldOccupation
+                field="regulier"
+                oneLogeBooking={regulierFields}
+                removeHandler={regulierRemove}
+                {...commonProps(index)}
+              />
+            </React.Fragment>
           );
         })}
 
@@ -147,14 +155,15 @@ const loadModifiedLogeBooking = () => {
 
         {exceptionnelFields.map((item, index) => {
           return (
-            <PaperFieldOccupation
-              key={item.id}
-              field="exceptionnel"
-              oneLogeBooking={exceptionnelFields}
-              removeHandler={exceptionnelRemove}
-              highlight={listeDates}
-              {...commonProps(index)}
-            />
+            <React.Fragment key={item.id}>
+              <PaperFieldOccupation
+                field="exceptionnel"
+                oneLogeBooking={exceptionnelFields}
+                removeHandler={exceptionnelRemove}
+                highlight={listeDates}
+                {...commonProps(index)}
+              />
+            </React.Fragment>
           );
         })}
 
@@ -164,17 +173,18 @@ const loadModifiedLogeBooking = () => {
 
         {suppressionFields.map((item, index) => {
           return (
-            <PaperFieldOccupation
-              key={item.id}
-              index={index}
-              field="suppression"
-              oneLogeBooking={suppressionFields}
-              removeHandler={suppressionRemove}
-              listeChoix={listeDates.reduce((prev, act) => {
-                return [...prev, act.date.format("dddd DD/MM/YYYY")];
-              }, [])}
-              {...commonProps(index)}
-            />
+            <React.Fragment key={item.id}>
+              <PaperFieldOccupation
+                index={index}
+                field="suppression"
+                oneLogeBooking={suppressionFields}
+                removeHandler={suppressionRemove}
+                listeChoix={listeDates.reduce((prev, act) => {
+                  return [...prev, act.date.format("dddd DD/MM/YYYY")];
+                }, [])}
+                {...commonProps(index)}
+              />
+            </React.Fragment>
           );
         })}
         <Typography variant="h6" />

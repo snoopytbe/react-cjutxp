@@ -63,20 +63,22 @@ export default function PaperFieldOccupation(props) {
       <Grid {...GridContainerProp} container>
         {modeleFormulaire[field].map(item => {
           return (
-            <Grid item xs={item.xs} sm={item.sm} key={item.id}>
-              <ControllerSwitch
-                name={`${field}[${bookingIndex}].${item.nom}`}
-                dataName={item.nom}
-                control={control}
-                onChangeHandler={onChangeHandler}
-                required={bookingIndex + 1 !== oneLogeBooking.length} // seul le dernier champs n'est pas obligatoire
-                label={item.displayName}
-                listeChoix={listeChoix ?? item.liste ?? ""}
-                highlight={highlight}
-                defaultValue={oneLogeBooking[bookingIndex]?.[item.nom] ?? ""}
-                type={item.type}
-              />
-            </Grid>
+            <React.Fragment key={item.id}>
+              <Grid item xs={item.xs} sm={item.sm}>
+                <ControllerSwitch
+                  name={`${field}[${bookingIndex}].${item.nom}`}
+                  dataName={item.nom}
+                  control={control}
+                  onChangeHandler={onChangeHandler}
+                  required={bookingIndex + 1 !== oneLogeBooking.length} // seul le dernier champs n'est pas obligatoire
+                  label={item.displayName}
+                  listeChoix={listeChoix ?? item.liste ?? ""}
+                  highlight={highlight}
+                  defaultValue={oneLogeBooking[bookingIndex]?.[item.nom] ?? ""}
+                  type={item.type}
+                />
+              </Grid>
+            </React.Fragment>
           );
         })}
 

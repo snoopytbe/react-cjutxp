@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
-import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
+import {
+  getOccupationLogeDate,
+  getIdLoge,
+  isEmptyLastField
+} from "./occupationMethods";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
@@ -38,18 +42,20 @@ export default function EditOccupation(props) {
     // On récupère l'id de la loge modifiée
     var idModified = getIdLoge(logeBooking, update.loge);
 
-    // On supprime le dernier champs qui est normalement vide
-    newLogeBooking[idModified]["exceptionnel"].length =
-      logeBooking[idModified]["exceptionnel"].length - 1;
+    // On supprime le dernier champs s'il est vide
+    if (isEmptyLastField(newLogeBooking[idModified], "exceptionnel")) {
+      newLogeBooking[idModified]["exceptionnel"].length =
+        newLogeBooking[idModified]["exceptionnel"].length - 1;
+    }
 
     // Puis on ajoute les nouvelles données
     let shortcut = update["exceptionnel"][0];
-    newLogeBooking[idModified]["exceptionnel"][length] = {
+    newLogeBooking[idModified]["exceptionnel"].push({
       date: shortcut.date,
       temple: shortcut.temple,
       sallehumide: shortcut.sallehumide,
       heure: shortcut.heure
-    };
+    });
 
     //Sauvegarde
     setLogeBooking(newLogeBooking);
