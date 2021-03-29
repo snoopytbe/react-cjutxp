@@ -43,7 +43,7 @@ export default function EditOccupation(props) {
     var idModified = getIdLoge(logeBooking, update.loge);
 
     // On supprime le dernier champs s'il est vide
-    if (isEmptyLastField(newLogeBooking[idModified], "exceptionnel")) {
+    if (isEmptyLastField(newLogeBooking[idModified], "exceptionnel", "date")) {
       newLogeBooking[idModified]["exceptionnel"].length =
         newLogeBooking[idModified]["exceptionnel"].length - 1;
     }

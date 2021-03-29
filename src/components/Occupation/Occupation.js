@@ -11,7 +11,13 @@ export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
 
   // Création du formulaire initialisé avec les données de la loge
-  const { control, handleSubmit, register, getValues, setValue } = useForm({
+  const {
+    control,
+    handleSubmit,
+    register,
+    getValues,
+    reset
+  } = useForm({
     defaultValues: logeBooking[id]
   });
 
@@ -63,15 +69,6 @@ export default function Occupation(props) {
     setTimeout(() => setListeDates(getListeDates(values), 500));
   };
 
-  const loadValues = values => {
-    let shortcut = values[id];
-    setValue("loge", shortcut.loge);
-    setValue("acronyme", shortcut.acronyme);
-    for (let i = exceptionnelFields.length - 1; i--; i >= 0)
-      exceptionnelRemove(i);
-    shortcut["exceptionnel"].forEach(item => exceptionnelAppend(item));
-  };
-
   // Lors de la validation du formulaire mise à jour de LogeBooking
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
@@ -83,12 +80,12 @@ export default function Occupation(props) {
   const calendrierMemoized = React.useMemo(
     () => (
       <Calendrier
-        logeBooking={logeBooking}
+        logeBooking={[getValues()]}
         setLogeBooking={value => {
-          setLogeBooking(value);
-          loadValues(value);
+          //setLogeBooking(value);
+          reset(value);
+          //forceUpdate();
         }}
-        id={id}
       />
     ),
     [listeDates]
