@@ -11,13 +11,7 @@ export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
 
   // Création du formulaire initialisé avec les données de la loge
-  const {
-    control,
-    handleSubmit,
-    register,
-    getValues,
-    reset
-  } = useForm({
+  const { control, handleSubmit, register, getValues, reset } = useForm({
     defaultValues: logeBooking[id]
   });
 
@@ -51,11 +45,6 @@ export default function Occupation(props) {
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState([]);
 
-  // Nécessaire pour le prise en compte des suppressions
-  React.useEffect(() => {
-    onChangeHandler();
-  }, [exceptionnelFields]);
-
   const onChangeHandler = () => {
     let values = getValues();
     // Mise à jour suite au changement
@@ -81,9 +70,9 @@ export default function Occupation(props) {
     () => (
       <Calendrier
         logeBooking={[getValues()]}
-        setLogeBooking={value => {
+        setLogeBooking={() => {
           //setLogeBooking(value);
-          reset(value);
+          //reset(value);
           //forceUpdate();
         }}
       />
