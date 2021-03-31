@@ -45,6 +45,11 @@ export default function Occupation(props) {
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState([]);
 
+  // Initialisation lors du chargement
+  React.useEffect(() => {
+    setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
+  }, []);
+  
   const onChangeHandler = () => {
     let values = getValues();
     // Mise à jour suite au changement
@@ -71,9 +76,8 @@ export default function Occupation(props) {
       <Calendrier
         logeBooking={[getValues()]}
         setLogeBooking={() => {
-          //setLogeBooking(value);
-          //reset(value);
-          //forceUpdate();
+          setLogeBooking(value);
+          reset(value);
         }}
       />
     ),
