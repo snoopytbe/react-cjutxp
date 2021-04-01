@@ -15,10 +15,10 @@ import "moment/min/locales.min";
 import estFerie from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
-import EditOccupation from "../Occupation/EditOccupation";
+import EditOccupation from "../Occupation/DeleteOccupation";
 
 export default function Calendrier(props) {
-  const { logeBooking, setLogeBooking, id = -1 } = props;
+  const { logeBooking, setLogeBooking } = props;
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
@@ -52,14 +52,17 @@ export default function Calendrier(props) {
     setOpen(true);
   };
 
-  var localLogeBooking = id === -1 ? logeBooking : [logeBooking[id]];
+   const handleDelete = () => {
+    setTypeEdit("delete");
+    setOpen(true);
+  }; 
 
-  const datesLogeBooking = localLogeBooking.map(item => getListeDates(item));
+  const datesLogeBooking = logeBooking.map(item => getListeDates(item));
 
   function listeLogesUtilisatricesDate(myDate) {
     let result = [];
     // On parcourt l'ensemble des loges
-    localLogeBooking?.forEach(
+    logeBooking?.forEach(
       (loge, index) =>
         // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
         dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
@@ -76,12 +79,12 @@ export default function Calendrier(props) {
     });
     setActiveMenu({
       general: true,
-      add: true,
-      modify: listeLogesUtilisatricesDate(myDate).length ?? null >= 0,
-      del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0
+      add: (logeBooking?.length ?? 0) > (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
+      modify: listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
+      del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0 // on peut effacer s'il y a au moins un loge utilisatrice ce jour
     });
     setContextData({
-      date: myDate,
+      date: myDate.toDate(),
       logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
     });
   }
@@ -148,8 +151,6 @@ export default function Calendrier(props) {
   }
 
   React.useEffect(() => {
-    localLogeBooking = id === -1 ? logeBooking : [logeBooking[id]];
-
     let newLigne = [];
 
     for (let i = 0; i < 31; i++)
@@ -204,7 +205,7 @@ export default function Calendrier(props) {
         <MenuItem disabled={!activeMenu.modify} onClick={handleModify}>
           Modifier
         </MenuItem>
-        <MenuItem disabled={!activeMenu.del} onClick={handleDescrClose}>
+        <MenuItem disabled={!activeMenu.del} onClick={handleDelete}>
           Supprimer
         </MenuItem>
       </Menu>
@@ -220,7 +221,6 @@ export default function Calendrier(props) {
           <EditOccupation
             logeBooking={logeBooking}
             setLogeBooking={setLogeBooking}
-            id={id}
             date={contextData?.date ?? null}
             logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
             setClose={handleClose}

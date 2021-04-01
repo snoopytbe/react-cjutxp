@@ -20,18 +20,7 @@ export default function EditOccupation(props) {
     typeEdit
   } = props;
 
-  const defaultValues = [
-    {
-      date: date.format(),
-      temple: "",
-      sallehumide: "",
-      heure: ""
-    }
-  ];
-
-  const { control, handleSubmit, getValues, setValue } = useForm({
-    defaultValues: defaultValues
-  });
+  const { control, handleSubmit } = useForm({});
 
   const onSubmit = update => {
     var newLogeBooking = logeBooking;
@@ -40,18 +29,14 @@ export default function EditOccupation(props) {
     var idModified = getIdLoge(logeBooking, update.loge);
 
     // On supprime le dernier champs s'il est vide
-    if (isEmptyLastField(newLogeBooking[idModified], "exceptionnel", "date")) {
-      newLogeBooking[idModified]["exceptionnel"].length =
-        newLogeBooking[idModified]["exceptionnel"].length - 1;
+    if (isEmptyLastField(newLogeBooking[idModified], "suppression")) {
+      newLogeBooking[idModified]["suppression"].length =
+        newLogeBooking[idModified]["suppression"].length - 1;
     }
 
     // Puis on ajoute les nouvelles données
-    let shortcut = update["exceptionnel"][0];
-    newLogeBooking[idModified]["exceptionnel"].push({
-      date: shortcut.date,
-      temple: shortcut.temple,
-      sallehumide: shortcut.sallehumide,
-      heure: shortcut.heure
+    newLogeBooking[idModified]["suppression"].push({
+      date: date.toJSON()
     });
 
     //Sauvegarde
@@ -64,6 +49,7 @@ export default function EditOccupation(props) {
   // Liste des loges
   var listeLoges = [];
   switch (typeEdit) {
+    case "delete":
     case "modify":
       listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
       break;
@@ -71,25 +57,10 @@ export default function EditOccupation(props) {
       listeLoges = logeBooking?.map(item => item.loge) ?? [];
   }
 
-  const logeChangeHandler = e => {
-    let occupation = getOccupationLogeDate(
-      logeBooking,
-      getValues("loge"),
-      date
-    );
-    setValue("exceptionnel[0].temple", occupation?.temple ?? "");
-    setValue("exceptionnel[0].sallehumide", occupation?.sallehumide ?? "");
-    setValue("exceptionnel[0].heure", occupation?.heure ?? "");
-  };
-
-  React.useEffect(() => {
-    logeChangeHandler();
-  }, []);
-
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6">Modifier une réservation</Typography>
+        <Typography variant="h6">Supprimer une réservation</Typography>
         <ControllerSelect
           name="loge"
           label="Loge"
@@ -97,13 +68,6 @@ export default function EditOccupation(props) {
           defaultValue={listeLoges[0]}
           listeChoix={listeLoges}
           required
-          onChangeHandler={logeChangeHandler}
-        />
-        <PaperFieldOccupation
-          field="exceptionnel"
-          oneLogeBooking={defaultValues}
-          bookingIndex={0}
-          control={control}
           onChangeHandler={() => {}}
         />
         <Typography variant="h6" />

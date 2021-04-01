@@ -91,8 +91,5 @@ export const modeleFormulaire = {
   ],
   suppression: [
     { ...caracteristiqueChamps["dateSelect"], xs: 6, sm: 3 },
-    { ...caracteristiqueChamps["temple"], xs: 6, sm: 2 },
-    { ...caracteristiqueChamps["sallehumide"], xs: 6, sm: 3 },
-    { ...caracteristiqueChamps["heure"], xs: 6, sm: 3 }
   ]
 };

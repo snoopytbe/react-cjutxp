@@ -91,10 +91,8 @@ export const getListeDates = oneLogeBooking => {
   if (oneLogeBooking?.hasOwnProperty("suppression")) {
     oneLogeBooking.suppression.forEach(suppression => {
       // Conversion de la date stockée en moment
-      let dateSansJour = suppression.date.slice(
-        suppression.date.indexOf(" ") + 1
-      );
-      maDate = moment(dateSansJour, "DD/MM/YYYY").locale("fr-FR");
+      let 
+      maDate = moment(suppression);
 
       if (maDate.isValid()) {
         // On cherche la position de maDate dans resultWithDelete
@@ -159,10 +157,7 @@ export const texteReservations = oneLogeBooking => {
     result += "\nRéservations exceptionnelles :\n";
     oneLogeBooking.exceptionnel.forEach((item, index) => {
       if (item.temple) {
-        result +=
-          moment(item.date)
-            .locale("fr-FR")
-            .format("dddd DD/MM/YYYY") + indexGenerator(item);
+        result += moment(item.date) + indexGenerator(item);
         result += index < oneLogeBooking.exceptionnel.length - 1 ? ", " : "";
       }
     });

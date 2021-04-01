@@ -5,6 +5,8 @@ import { getListeDates, checkLastField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
+import "moment/min/locales.min";
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {
@@ -49,7 +51,7 @@ export default function Occupation(props) {
   React.useEffect(() => {
     setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
   }, []);
-  
+
   const onChangeHandler = () => {
     let values = getValues();
     // Mise à jour suite au changement
@@ -63,10 +65,21 @@ export default function Occupation(props) {
     setTimeout(() => setListeDates(getListeDates(values), 500));
   };
 
+  const corrigeDatesLogeBooking = booking => {
+    let newLogeBooking = booking;
+    newLogeBooking.suppression?.forEach((item, index) => {
+      // Conversion de la date stockée en moment
+      let dateSansJour = item.date.slice(item.date.indexOf(" ") + 1);
+      let maDate = moment(dateSansJour, "DD/MM/YYYY").locale("fr-FR");
+      newLogeBooking.suppression[index].date = maDate.toDate().toJSON();
+    });
+    return newLogeBooking;
+  };
+
   // Lors de la validation du formulaire mise à jour de LogeBooking
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
-    newLogeBooking[id] = update;
+    newLogeBooking[id] = corrigeDatesLogeBooking(update);
     setLogeBooking(newLogeBooking);
   };
 
@@ -74,10 +87,10 @@ export default function Occupation(props) {
   const calendrierMemoized = React.useMemo(
     () => (
       <Calendrier
-        logeBooking={[getValues()]}
-        setLogeBooking={() => {
-          setLogeBooking(value);
-          reset(value);
+        logeBooking={[corrigeDatesLogeBooking(getValues())]}
+        setLogeBooking={value => {
+          reset(value[0]);
+          onChangeHandler();
         }}
       />
     ),
