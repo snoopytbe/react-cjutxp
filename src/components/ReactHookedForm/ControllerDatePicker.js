@@ -19,6 +19,7 @@ export default function ControllerDatePicker(props) {
     required,
     onChangeHandler,
     highlight,
+    limit,
     ...other
   } = props;
 
@@ -28,11 +29,15 @@ export default function ControllerDatePicker(props) {
     }
   }
 
-function disableAllButHighlight(date) {
-  return !highlight.reduce((bef, now) => {
-                  return bef || now.date.diff(date, "days") === 0;
-                }, false);
-}
+  function disableAllButHighlight(date) {
+    let result;
+    if (limit)
+      result = !limit?.reduce((bef, now) => {
+        return bef || now.date.diff(date, "days") === 0;
+      }, false);
+    else result = false;
+    return result;
+  }
 
   return (
     <MuiPickersUtilsProvider utils={LocalizedUtils} locale={frLocale}>

@@ -171,7 +171,7 @@ export default function Occupation(props) {
                 field="suppression"
                 oneLogeBooking={suppressionFields}
                 removeHandler={suppressionRemove}
-                highlight={listeDates}
+                limit={listeDates}
                 {...commonProps(index)}
               />
             </React.Fragment>

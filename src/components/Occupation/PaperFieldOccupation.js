@@ -9,7 +9,7 @@ import moment from "moment";
 
 // Permet de choisir le controller à appliquer en fonction  de son type et de fixer la valeur par défaut
 function ControllerSwitch(props) {
-  const { defaultValue, type, ...controllerProperties } = props;
+  const { defaultValue, type, limit, ...controllerProperties } = props;
 
   switch (type) {
     case "Select":
@@ -25,8 +25,11 @@ function ControllerSwitch(props) {
         <ControllerDatePicker
           {...controllerProperties}
           defaultValue={
-            defaultValue ? moment(defaultValue).toDate() : new Date()
+            defaultValue
+              ? moment(defaultValue).toDate()
+              : limit[0]?.date?.toDate() ?? new Date()
           }
+          limit={limit}
         />
       );
       break;
@@ -45,6 +48,7 @@ export default function PaperFieldOccupation(props) {
     oneLogeBooking, // objet décrivant la réservation de la loge
     noDelete,
     highlight,
+    limit,
     ...others
   } = props;
 
@@ -73,6 +77,7 @@ export default function PaperFieldOccupation(props) {
                   label={item.displayName}
                   listeChoix={item.liste ?? ""}
                   highlight={highlight}
+                  limit={limit}
                   defaultValue={oneLogeBooking[bookingIndex]?.[item.nom] ?? ""}
                   type={item.type}
                 />
