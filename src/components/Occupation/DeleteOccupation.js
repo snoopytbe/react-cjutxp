@@ -8,6 +8,8 @@ import {
   getIdLoge,
   isEmptyLastField
 } from "./occupationMethods";
+import moment from "moment";
+import "moment/min/locales.min";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
@@ -36,7 +38,7 @@ export default function EditOccupation(props) {
 
     // Puis on ajoute les nouvelles données
     newLogeBooking[idModified]["suppression"].push({
-      date: date.toJSON()
+      date: moment(date).locale("fr-FR").format("dddd DD/MM/YYYY")
     });
 
     //Sauvegarde

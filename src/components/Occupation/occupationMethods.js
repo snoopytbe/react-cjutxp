@@ -91,8 +91,7 @@ export const getListeDates = oneLogeBooking => {
   if (oneLogeBooking?.hasOwnProperty("suppression")) {
     oneLogeBooking.suppression.forEach(suppression => {
       // Conversion de la date stockée en moment
-      let 
-      maDate = moment(suppression);
+      maDate = moment(suppression.date, moment.ISO_8601);
 
       if (maDate.isValid()) {
         // On cherche la position de maDate dans resultWithDelete
@@ -180,10 +179,7 @@ export function isEmptyLastField(oneLogeBooking, fieldName, exception) {
     // Le résultat est à true si tous les champs, sauf exception, sont soit égaux à "" soit undefined
     result = true;
     for (let value in lastField) {
-      if (value !== exception)
-        result =
-          result &&
-          (lastField[value] === "" || typeof lastField[value] === "undefined");
+      if (value !== exception) result = result && lastField[value];
     }
   }
   return result;

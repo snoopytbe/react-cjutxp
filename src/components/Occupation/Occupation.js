@@ -52,8 +52,19 @@ export default function Occupation(props) {
     setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
   }, []);
 
+  const corrigeDatesLogeBooking = booking => {
+    let newLogeBooking = booking;
+    newLogeBooking.suppression?.forEach((item, index) => {
+      // Conversion de la date stockée en moment
+      let dateSansJour = item.date.slice(item.date.indexOf(" ") + 1);
+      let maDate = moment(dateSansJour, "DD/MM/YYYY").locale("fr-FR");
+      newLogeBooking.suppression[index].date = maDate.toISOString();
+    });
+    return newLogeBooking;
+  };
+
   const onChangeHandler = () => {
-    let values = getValues();
+    let values = corrigeDatesLogeBooking(getValues());
     // Mise à jour suite au changement
     checkLastField(
       values,
@@ -63,17 +74,6 @@ export default function Occupation(props) {
     );
     // Mise à jour suite au changement
     setTimeout(() => setListeDates(getListeDates(values), 500));
-  };
-
-  const corrigeDatesLogeBooking = booking => {
-    let newLogeBooking = booking;
-    newLogeBooking.suppression?.forEach((item, index) => {
-      // Conversion de la date stockée en moment
-      let dateSansJour = item.date.slice(item.date.indexOf(" ") + 1);
-      let maDate = moment(dateSansJour, "DD/MM/YYYY").locale("fr-FR");
-      newLogeBooking.suppression[index].date = maDate.toDate().toJSON();
-    });
-    return newLogeBooking;
   };
 
   // Lors de la validation du formulaire mise à jour de LogeBooking
