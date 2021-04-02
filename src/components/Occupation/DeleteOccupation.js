@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
-import PaperFieldOccupation from "./PaperFieldOccupation";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import {
   getOccupationLogeDate,

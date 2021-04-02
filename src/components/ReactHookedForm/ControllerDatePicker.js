@@ -28,6 +28,12 @@ export default function ControllerDatePicker(props) {
     }
   }
 
+function disableAllButHighlight(date) {
+  return !highlight.reduce((bef, now) => {
+                  return bef || now.date.diff(date, "days") === 0;
+                }, false);
+}
+
   return (
     <MuiPickersUtilsProvider utils={LocalizedUtils} locale={frLocale}>
       <Controller
@@ -51,6 +57,7 @@ export default function ControllerDatePicker(props) {
             }}
             okLabel="Valider"
             cancelLabel="Annuler"
+            shouldDisableDate={disableAllButHighlight}
             renderDay={(day, selectedDate, isInCurrentMonth, dayComponent) => {
               // ne pas supprimer selectedDate !!!
               let isSelected =

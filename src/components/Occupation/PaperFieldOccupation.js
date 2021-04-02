@@ -42,7 +42,6 @@ export default function PaperFieldOccupation(props) {
     control,
     onChangeHandler,
     removeHandler,
-    listeChoix,
     oneLogeBooking, // objet décrivant la réservation de la loge
     noDelete,
     highlight,
@@ -72,7 +71,7 @@ export default function PaperFieldOccupation(props) {
                   onChangeHandler={onChangeHandler}
                   required={bookingIndex + 1 !== oneLogeBooking.length} // seul le dernier champs n'est pas obligatoire
                   label={item.displayName}
-                  listeChoix={listeChoix ?? item.liste ?? ""}
+                  listeChoix={item.liste ?? ""}
                   highlight={highlight}
                   defaultValue={oneLogeBooking[bookingIndex]?.[item.nom] ?? ""}
                   type={item.type}

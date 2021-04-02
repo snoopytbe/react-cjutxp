@@ -90,6 +90,6 @@ export const modeleFormulaire = {
     { ...caracteristiqueChamps["heure"], xs: 6, sm: 3 }
   ],
   suppression: [
-    { ...caracteristiqueChamps["dateSelect"], xs: 6, sm: 3 },
+    { ...caracteristiqueChamps["datePicker"], xs: 6, sm: 3 },
   ]
 };
