@@ -37,7 +37,7 @@ export default function EditOccupation(props) {
 
     // Puis on ajoute les nouvelles données
     newLogeBooking[idModified]["suppression"].push({
-      date: moment(date).locale("fr-FR").format("dddd DD/MM/YYYY")
+      date: date
     });
 
     //Sauvegarde

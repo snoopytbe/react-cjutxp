@@ -31,13 +31,6 @@ export default function ControllerDatePicker(props) {
     }
   }
 
-  var defaultValueCorrected = defaultValue;
-  if (!defaultValue) {
-    if (limit) {
-      defaultValueCorrected = moment(limit[0]?.date).toDate();
-    } else defaultValueCorrected = new Date();
-  }
-
   // Retourne true quand la date doit être désactivée dans le calendrier
   function disableAllButHighlight(date) {
     let result = false;
@@ -49,7 +42,7 @@ export default function ControllerDatePicker(props) {
       // alors le résultat doit être à false
       result = !result;
       // DefaultValue fait partie des dates activées
-      if (moment(defaultValueCorrected).diff(date, "days") === 0)
+      if (moment(defaultValue).diff(date, "days") === 0)
         result = false;
     }
     return result;
@@ -61,7 +54,7 @@ export default function ControllerDatePicker(props) {
         {...other}
         name={name}
         control={control}
-        defaultValue={defaultValueCorrected}
+        defaultValue={defaultValue === "" ? null : defaultValue}
         rules={{ required: { required } }}
         render={({ value, onChange }) => (
           <KeyboardDatePicker

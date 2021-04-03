@@ -70,7 +70,7 @@ export default function Occupation(props) {
   // Lors de la validation du formulaire mise à jour de LogeBooking
   const onSubmit = update => {
     let newLogeBooking = logeBooking;
-    newLogeBooking[id] = corrigeDatesLogeBooking(update);
+    newLogeBooking[id] = update;
     setLogeBooking(newLogeBooking);
   };
 

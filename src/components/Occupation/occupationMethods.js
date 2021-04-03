@@ -153,11 +153,26 @@ export const texteReservations = oneLogeBooking => {
   }
 
   if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
-    result += "\nRéservations exceptionnelles :\n";
     oneLogeBooking.exceptionnel.forEach((item, index) => {
       if (item.temple) {
-        result += moment(item.date) + indexGenerator(item);
-        result += index < oneLogeBooking.exceptionnel.length - 1 ? ", " : "";
+        if (index === 0) result += "\nRéservations exceptionnelles :\n";
+        if (index > 0) result += ", ";
+        result +=
+          moment(item.date)
+            .locale("fr-FR")
+            .format("DD/MM/YYYY") + indexGenerator(item);
+      }
+    });
+  }
+
+  if (oneLogeBooking?.hasOwnProperty("suppression")) {
+    oneLogeBooking.suppression.forEach((item, index) => {
+      if (item.date) {
+        if (index === 0) result += "\nAnnulations exceptionnelles :\n";
+        if (index > 0) result += ", ";
+        result += moment(item.date)
+          .locale("fr-FR")
+          .format("DD/MM/YYYY");
       }
     });
   }
@@ -169,7 +184,12 @@ export const texteReservations = oneLogeBooking => {
 // Cette fonction permet de regarder si le dernier champs est vide
 // retourne un booléen
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export function isEmptyLastField(oneLogeBooking, fieldName, exception) {
+export function isEmptyLastField(
+  oneLogeBooking,
+  fieldName,
+  exception = "",
+  nullValue = ""
+) {
   var result = false;
 
   if (oneLogeBooking.hasOwnProperty(fieldName)) {
@@ -179,7 +199,9 @@ export function isEmptyLastField(oneLogeBooking, fieldName, exception) {
     // Le résultat est à true si tous les champs, sauf exception, sont soit égaux à "" soit undefined
     result = true;
     for (let value in lastField) {
-      if (value !== exception) result = result && !lastField[value];
+      if (value !== exception) {
+        result = result && !lastField[value];
+      }
     }
   }
   return result;
@@ -206,6 +228,6 @@ export const checkLastField = (
   if (!isEmptyLastField(oneLogeBooking, "exceptionnel", "date"))
     exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
 
-  if (!isEmptyLastField(oneLogeBooking, "suppression"))
+  if (!isEmptyLastField(oneLogeBooking, "suppression", "", new Date()))
     suppressionAppend({ date: "" });
 };

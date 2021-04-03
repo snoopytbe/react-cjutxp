@@ -24,13 +24,6 @@ export const initialValuesComplete = [
         sallehumide: "Salle humide Jardin",
         heure: "20h30"
       },
-      {
-        semaine: "",
-        jours: "",
-        temple: "",
-        sallehumide: "",
-        heure: ""
-      }
     ],
     exceptionnel: [
       {
@@ -64,13 +57,6 @@ export const initialValuesComplete = [
         sallehumide: "Salle humide Cuisine",
         heure: "20h00"
       },
-      {
-        semaine: "",
-        jours: "",
-        temple: "",
-        sallehumide: "",
-        heure: ""
-      }
     ],
     exceptionnel: [
       {
