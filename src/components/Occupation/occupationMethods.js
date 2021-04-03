@@ -179,7 +179,7 @@ export function isEmptyLastField(oneLogeBooking, fieldName, exception) {
     // Le résultat est à true si tous les champs, sauf exception, sont soit égaux à "" soit undefined
     result = true;
     for (let value in lastField) {
-      if (value !== exception) result = result && lastField[value];
+      if (value !== exception) result = result && !lastField[value];
     }
   }
   return result;

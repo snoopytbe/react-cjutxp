@@ -9,6 +9,8 @@ import {
   KeyboardDatePicker
 } from "@material-ui/pickers";
 import { Badge } from "@material-ui/core";
+import moment from "moment";
+import "moment/min/locales.min";
 
 export default function ControllerDatePicker(props) {
   const {
@@ -29,13 +31,27 @@ export default function ControllerDatePicker(props) {
     }
   }
 
+  var defaultValueCorrected = defaultValue;
+  if (!defaultValue) {
+    if (limit) {
+      defaultValueCorrected = moment(limit[0]?.date).toDate();
+    } else defaultValueCorrected = new Date();
+  }
+
+  // Retourne true quand la date doit être désactivée dans le calendrier
   function disableAllButHighlight(date) {
-    let result;
-    if (limit)
-      result = !limit?.reduce((bef, now) => {
-        return bef || now.date.diff(date, "days") === 0;
-      }, false);
-    else result = false;
+    let result = false;
+    if (limit) {
+      // si date fait partie des dates de "limit"
+      limit.forEach(
+        item => (result = result || item.date.diff(date, "days") === 0)
+      );
+      // alors le résultat doit être à false
+      result = !result;
+      // DefaultValue fait partie des dates activées
+      if (moment(defaultValueCorrected).diff(date, "days") === 0)
+        result = false;
+    }
     return result;
   }
 
@@ -45,7 +61,7 @@ export default function ControllerDatePicker(props) {
         {...other}
         name={name}
         control={control}
-        defaultValue={defaultValue}
+        defaultValue={defaultValueCorrected}
         rules={{ required: { required } }}
         render={({ value, onChange }) => (
           <KeyboardDatePicker
@@ -55,7 +71,7 @@ export default function ControllerDatePicker(props) {
             value={value}
             onChange={date => {
               onChange(date);
-              onChangeHandler();
+              onChangeHandler(name);
             }}
             KeyboardButtonProps={{
               "aria-label": "Changer la date"

@@ -5,18 +5,16 @@ import ControllerDatePicker from "../ReactHookedForm/ControllerDatePicker";
 import Delete from "../ReactHookedForm/Delete";
 import { modeleFormulaire } from "../../data/constantes";
 import { useStyles } from "../../styles/styles";
-import moment from "moment";
 
 // Permet de choisir le controller à appliquer en fonction  de son type et de fixer la valeur par défaut
 function ControllerSwitch(props) {
-  const { defaultValue, type, limit, ...controllerProperties } = props;
+  const { type, ...controllerProperties } = props;
 
   switch (type) {
     case "Select":
       return (
         <ControllerSelect
           {...controllerProperties}
-          defaultValue={defaultValue}
         />
       );
       break;
@@ -24,12 +22,6 @@ function ControllerSwitch(props) {
       return (
         <ControllerDatePicker
           {...controllerProperties}
-          defaultValue={
-            defaultValue
-              ? moment(defaultValue).toDate()
-              : limit[0]?.date?.toDate() ?? new Date()
-          }
-          limit={limit}
         />
       );
       break;

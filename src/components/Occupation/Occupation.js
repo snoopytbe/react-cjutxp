@@ -45,14 +45,11 @@ export default function Occupation(props) {
   });
 
   // Liste des dates avec une réservation
-  const [listeDates, setListeDates] = React.useState([]);
+  const [listeDates, setListeDates] = React.useState(
+    getListeDates(logeBooking[id])
+  );
 
-  // Initialisation lors du chargement
-  React.useEffect(() => {
-    setTimeout(() => setListeDates(getListeDates(getValues())), 1000);
-  }, []);
-
-  const onChangeHandler = () => {
+  const onChangeHandler = name => {
     let values = getValues();
     // Mise à jour suite au changement
     checkLastField(
@@ -62,8 +59,13 @@ export default function Occupation(props) {
       suppressionAppend
     );
     // Mise à jour suite au changement
-    setTimeout(() => setListeDates(getListeDates(values), 500));
+    setListeDates(getListeDates(values));
   };
+
+  // Initialisation lors du chargement
+  React.useEffect(() => {
+    onChangeHandler();
+  }, []);
 
   // Lors de la validation du formulaire mise à jour de LogeBooking
   const onSubmit = update => {
@@ -172,6 +174,7 @@ export default function Occupation(props) {
                 oneLogeBooking={suppressionFields}
                 removeHandler={suppressionRemove}
                 limit={listeDates}
+                highlight={listeDates}
                 {...commonProps(index)}
               />
             </React.Fragment>
