@@ -2,13 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
-import {
-  getOccupationLogeDate,
-  getIdLoge,
-  isEmptyLastField
-} from "./occupationMethods";
-import moment from "moment";
-import "moment/min/locales.min";
+import { getIdLoge, isEmptyLastField } from "./occupationMethods";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {

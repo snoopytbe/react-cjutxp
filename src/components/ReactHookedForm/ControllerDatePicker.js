@@ -42,8 +42,7 @@ export default function ControllerDatePicker(props) {
       // alors le résultat doit être à false
       result = !result;
       // DefaultValue fait partie des dates activées
-      if (moment(defaultValue).diff(date, "days") === 0)
-        result = false;
+      if (moment(defaultValue).diff(date, "days") === 0) result = false;
     }
     return result;
   }
@@ -54,7 +53,7 @@ export default function ControllerDatePicker(props) {
         {...other}
         name={name}
         control={control}
-        defaultValue={defaultValue === "" ? null : defaultValue}
+        defaultValue={defaultValue === "" ? null : defaultValue} // utiliser la valeur null permet d'avoir le "empty label" du DatePicker
         rules={{ required: { required } }}
         render={({ value, onChange }) => (
           <KeyboardDatePicker
