@@ -1,4 +1,4 @@
-import { NouvelAn, Noel } from "./Calendrier/jourFeries";
+import { NouvelAn, Noel } from "../components/Calendrier/jourFeries";
 
 export const annee = 2020;
 

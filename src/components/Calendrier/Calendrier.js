@@ -1,5 +1,11 @@
 import React from "react";
-import { annee, mois, zone } from "../../data/constantes";
+import {
+  annee,
+  mois,
+  zone,
+  joursInterdits,
+  periodesInterdites
+} from "../../data/constantes";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Table from "@material-ui/core/Table";
@@ -12,7 +18,7 @@ import Paper from "@material-ui/core/Paper";
 import moment from "moment";
 import TableCell from "../../styles/styleTableCell";
 import "moment/min/locales.min";
-import estFerie from "./jourFeries";
+import { estFerie } from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
 import EditOccupation from "../Occupation/EditOccupationWindow";
@@ -59,8 +65,23 @@ export default function Calendrier(props) {
 
   const datesLogeBooking = logeBooking.map(item => getListeDates(item));
 
+  function estSansReservation(myDate) {
+    let result = false;
+    // Les dimanches sont sans réservation
+    if (myDate.day() === 0) return result;
+    // On regarde ensuite les périodes interdites
+    periodesInterdites.forEach(per => {
+      if (myDate.isSameOrAfter(per.debut) && myDate.isSameOrBefore(per.fin))
+        result = true;
+    });
+    return result;
+  }
+
   function listeLogesUtilisatricesDate(myDate) {
     let result = [];
+    // On élimine les jours sans réservations
+    if (estSansReservation(myDate)) return result;
+
     // On parcourt l'ensemble des loges
     logeBooking?.forEach(
       (loge, index) =>
@@ -79,11 +100,16 @@ export default function Calendrier(props) {
     });
     setActiveMenu({
       general: true,
-      add:
-        (logeBooking?.length ?? 0) >
-        (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
-      modify: listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
-      del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0 // on peut effacer s'il y a au moins un loge utilisatrice ce jour
+      add: estSansReservation(myDate)
+        ? false
+        : (logeBooking?.length ?? 0) >
+          (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
+      modify: estSansReservation(myDate)
+        ? false
+        : listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
+      del: estSansReservation(myDate)
+        ? false
+        : listeLogesUtilisatricesDate(myDate).length ?? null >= 0 // on peut effacer s'il y a au moins un loge utilisatrice ce jour
     });
     setContextData({
       date: myDate,

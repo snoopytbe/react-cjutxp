@@ -27,7 +27,7 @@ Affichage du calendrier à la demande
 Tableau en français
 Ajouter un menu pour accéder aux différents écrans
 Ajout de la modification des réservations via le calendrier
-
+Interdire le dimanche en format récurrent, neutraliser la période de Noël
 
 Brainstorming
 "récurrente" : Réservations récurrentes 
