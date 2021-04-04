@@ -60,7 +60,7 @@ export default function Calendrier(props) {
 
   const handleDelete = () => {
     setTypeEdit("delete");
-    setOpen(true);
+    setOpen(true); 
   };
 
   const datesLogeBooking = logeBooking.map(item => getListeDates(item));
