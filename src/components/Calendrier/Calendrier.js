@@ -15,7 +15,7 @@ import "moment/min/locales.min";
 import estFerie from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
-import EditOccupation from "../Occupation/DeleteOccupation";
+import EditOccupation from "../Occupation/EditOccupationWindow";
 
 export default function Calendrier(props) {
   const { logeBooking, setLogeBooking } = props;
@@ -52,10 +52,10 @@ export default function Calendrier(props) {
     setOpen(true);
   };
 
-   const handleDelete = () => {
+  const handleDelete = () => {
     setTypeEdit("delete");
     setOpen(true);
-  }; 
+  };
 
   const datesLogeBooking = logeBooking.map(item => getListeDates(item));
 
@@ -79,12 +79,14 @@ export default function Calendrier(props) {
     });
     setActiveMenu({
       general: true,
-      add: (logeBooking?.length ?? 0) > (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
+      add:
+        (logeBooking?.length ?? 0) >
+        (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
       modify: listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
       del: listeLogesUtilisatricesDate(myDate).length ?? null >= 0 // on peut effacer s'il y a au moins un loge utilisatrice ce jour
     });
     setContextData({
-      date: myDate.toDate(),
+      date: myDate,
       logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
     });
   }
