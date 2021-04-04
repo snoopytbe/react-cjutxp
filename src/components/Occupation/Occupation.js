@@ -5,8 +5,7 @@ import { getListeDates, checkLastField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
-import moment from "moment";
-import "moment/min/locales.min";
+
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {

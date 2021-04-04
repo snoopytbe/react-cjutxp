@@ -1,3 +1,5 @@
+import { NouvelAn, Noel } from "./Calendrier/jourFeries";
+
 export const annee = 2020;
 
 export const zone = "A";
@@ -10,6 +12,13 @@ export const jours = [
   { nom: "vendredi", numero: 5 },
   { nom: "samedi", numero: 6 },
   { nom: "dimanche", numero: 0 }
+];
+
+export const joursInterdits = ["dimanche"];
+
+export const periodesInterdites = [
+  { debut: Noel(annee), fin: NouvelAn(annee + 1) },
+  { debut: new Date(annee + 1, 6, 1), fin: new Date(annee + 1, 6, 31) }
 ];
 
 export const mois = [
@@ -89,7 +98,5 @@ export const modeleFormulaire = {
     { ...caracteristiqueChamps["sallehumide"], xs: 6, sm: 3 },
     { ...caracteristiqueChamps["heure"], xs: 6, sm: 3 }
   ],
-  suppression: [
-    { ...caracteristiqueChamps["datePicker"], xs: 11, sm: 11 },
-  ]
+  suppression: [{ ...caracteristiqueChamps["datePicker"], xs: 11, sm: 11 }]
 };

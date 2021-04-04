@@ -2,7 +2,7 @@
 
 import moment from "moment";
 
-function Paques(year) {
+export function Paques(year) {
   //Oudin's Algorithm
   var g = year % 19;
   var c = year / 100;
@@ -20,53 +20,53 @@ function Paques(year) {
   });
 }
 
-function NouvelAn(year) {
+export function NouvelAn(year) {
   return new Date(year, 0, 1);
 }
 
-function LundiDePaques(year) {
+export function LundiDePaques(year) {
   var paq = Paques(year);
   paq.add(1, "days");
   return new Date(year, paq.month(), paq.date());
 }
 
-function PremierMai(year) {
+export function PremierMai(year) {
   return new Date(year, 4, 1);
 }
 
-function HuitMai(year) {
+export function HuitMai(year) {
   return new Date(year, 4, 8);
 }
 
-function Ascension(year) {
+export function Ascension(year) {
   var paq = Paques(year);
   paq.add(4 + 7 * 5, "days");
   return new Date(year, paq.month(), paq.date());
 }
 
-function LundiDePentecote(year) {
+export function LundiDePentecote(year) {
   var paq = Paques(year);
   paq.add(1 + 7 * 7, "days");
   return new Date(year, paq.month(), paq.date());
 }
 
-function FeteNationale(year) {
+export function FeteNationale(year) {
   return new Date(year, 6, 14);
 }
 
-function Assomption(year) {
+export function Assomption(year) {
   return new Date(year, 7, 15);
 }
 
-function Toussaint(year) {
+export function Toussaint(year) {
   return new Date(year, 10, 1);
 }
 
-function Armistice(year) {
+export function Armistice(year) {
   return new Date(year, 10, 11);
 }
 
-function Noel(year) {
+export function Noel(year) {
   return new Date(year, 11, 25);
 }
 
@@ -78,7 +78,7 @@ function AreDateEquals(date1, date2) {
   );
 }
 
-export default function estFerie(myDate) {
+export function estFerie(myDate) {
   var year = myDate.year();
   var dt = new Date(year, myDate.month(), myDate.date());
 

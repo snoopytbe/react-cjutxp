@@ -1,10 +1,9 @@
 
-Modifier un temple ou une salle humide pour une date
 Interdire le dimanche en format récurrent
 Neutraliser la période de Noël
 Vérification des champs saisis : pas de date en doublon, pas d'ajout ou suppression invalide
 Revoir la taille de la police de caractères
-Calendrier plus détaillé
+Calendrier plus détaillé = code couleur pour les différents types de réservation
 Export PDF
 Sauvegarde sur un serveur / SQL ?
 KeyboardTimePicker pour le choix de l'heure
@@ -27,6 +26,7 @@ Saisie de plusieurs loges
 Affichage du calendrier à la demande
 Tableau en français
 Ajouter un menu pour accéder aux différents écrans
+Ajout de la modification des réservations via le calendrier
 
 
 Brainstorming
