@@ -34,6 +34,12 @@ export default function EditOccupation(props) {
       texteEntete = "Suppression de réservation";
       break;
 
+    case "add_regulier":
+      field = "regulier";
+      listeLoges = logeBooking?.map(loge => loge.loge) ?? [];
+      texteEntete = "Ajout de réservation";
+      break;
+
     case "modify":
       field = "exceptionnel";
       listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
@@ -61,13 +67,9 @@ export default function EditOccupation(props) {
     // On récupère l'id de la loge modifiée
     var idModified = getIdLoge(logeBooking, update.loge);
 
-    // On supprime le dernier champs s'il est vide
-    if (isEmptyLastField(newLogeBooking[idModified], field)) {
-      newLogeBooking[idModified][field].length =
-        newLogeBooking[idModified][field].length - 1;
-    }
+    var shortcut = update[field][0];
 
-    // Puis on ajoute les nouvelles données
+    // On ajoute les nouvelles données
     switch (field) {
       case "suppression":
         newLogeBooking[idModified][field].push({
@@ -75,11 +77,10 @@ export default function EditOccupation(props) {
         });
         break;
 
-      case "exceptionnel":
-        // Puis on ajoute les nouvelles données
-        let shortcut = update[field][0];
+      case "regulier":
         newLogeBooking[idModified][field].push({
-          date: shortcut.date,
+          jours: shortcut.jours,
+          semaine: shortcut.semaine,
           temple: shortcut.temple,
           sallehumide: shortcut.sallehumide,
           heure: shortcut.heure
@@ -87,17 +88,24 @@ export default function EditOccupation(props) {
         break;
 
       default:
+        // = "exceptionnel"
+        newLogeBooking[idModified][field].push({
+          date: shortcut.date,
+          temple: shortcut.temple,
+          sallehumide: shortcut.sallehumide,
+          heure: shortcut.heure
+        });
     }
-
-    //Sauvegarde
-    setLogeBooking(newLogeBooking);
 
     // Fermeture de la fenêtre
     setClose(true);
+    
+    //Sauvegarde
+    setLogeBooking(newLogeBooking);
   };
 
   const logeChangeHandler = e => {
-    if ((field = "exceptionnel")) {
+    if ((field === "exceptionnel")) {
       let occupation = getOccupationLogeDate(
         logeBooking,
         getValues("loge"),
@@ -115,7 +123,9 @@ export default function EditOccupation(props) {
 
   const defaultValues = [
     {
-      date: date?.format(),
+      date: date?.format() ?? new Date(),
+      semaine: "",
+      jour: "",
       temple: "",
       sallehumide: "",
       heure: ""
@@ -139,7 +149,7 @@ export default function EditOccupation(props) {
           required
           onChangeHandler={logeChangeHandler}
         />
-        {field === "exceptionnel" && (
+        {typeEdit !== "delete" && (
           <>
             <PaperFieldOccupation
               field={field}
@@ -150,6 +160,7 @@ export default function EditOccupation(props) {
             />
           </>
         )}
+
         <Typography variant="h6" />
         <Button variant="contained" color="primary" type="submit">
           Valider

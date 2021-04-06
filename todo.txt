@@ -1,6 +1,4 @@
 
-Interdire le dimanche en format récurrent
-Neutraliser la période de Noël
 Vérification des champs saisis : pas de date en doublon, pas d'ajout ou suppression invalide
 Revoir la taille de la police de caractères
 Calendrier plus détaillé = code couleur pour les différents types de réservation

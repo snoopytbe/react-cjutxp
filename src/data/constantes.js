@@ -92,6 +92,12 @@ export const modeleFormulaire = {
     { ...caracteristiqueChamps["sallehumide"], xs: 4, sm: 2 },
     { ...caracteristiqueChamps["heure"], xs: 4, sm: 3 }
   ],
+  modification: [
+    { ...caracteristiqueChamps["datePicker"], xs: 6, sm: 3 },
+    { ...caracteristiqueChamps["temple"], xs: 6, sm: 2 },
+    { ...caracteristiqueChamps["sallehumide"], xs: 6, sm: 3 },
+    { ...caracteristiqueChamps["heure"], xs: 6, sm: 3 }
+  ],
   exceptionnel: [
     { ...caracteristiqueChamps["datePicker"], xs: 6, sm: 3 },
     { ...caracteristiqueChamps["temple"], xs: 6, sm: 2 },

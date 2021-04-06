@@ -65,7 +65,7 @@ export default function PaperFieldOccupation(props) {
                   dataName={item.nom}
                   control={control}
                   onChangeHandler={onChangeHandler}
-                  required={bookingIndex + 1 !== oneLogeBooking.length} // seul le dernier champs n'est pas obligatoire
+                  required={true} // seul le dernier champs n'est pas obligatoire
                   label={item.displayName}
                   listeChoix={item.liste ?? ""}
                   highlight={highlight}

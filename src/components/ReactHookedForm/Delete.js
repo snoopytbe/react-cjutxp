@@ -6,13 +6,11 @@ export default function Delete(props) {
 
   return (
     <div>
-      {maxIndex > 1 && index + 1 < maxIndex && (
+      {maxIndex > 1 && (
         <DeleteIcon
           color="primary"
           onClick={() => {
-            if (maxIndex > 1) {
-              removeHandler(index);
-            }
+            removeHandler(index);
           }}
           style={{ fontSize: "1.8em" }}
         />

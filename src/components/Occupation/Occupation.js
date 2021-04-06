@@ -5,11 +5,13 @@ import { getListeDates, checkLastField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
-
+import DialogAddOccupation from "./DialogAddOccupation";
+import moment from "moment";
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
+  const [open, setOpen] = React.useState(false);
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
@@ -48,17 +50,9 @@ export default function Occupation(props) {
     getListeDates(logeBooking[id])
   );
 
-  const onChangeHandler = name => {
-    let values = getValues();
+  const onChangeHandler = () => {
     // Mise à jour suite au changement
-    checkLastField(
-      values,
-      regulierAppend,
-      exceptionnelAppend,
-      suppressionAppend
-    );
-    // Mise à jour suite au changement
-    setListeDates(getListeDates(values));
+    setListeDates(getListeDates(getValues()));
   };
 
   // Initialisation lors du chargement
@@ -143,6 +137,39 @@ export default function Occupation(props) {
             </React.Fragment>
           );
         })}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Ajouter
+        </Button>
+
+        <Typography variant="h6">Modifications exceptionnelles</Typography>
+
+        {modificationsFields.map((item, index) => {
+          return (
+            <React.Fragment key={item.id}>
+              <PaperFieldOccupation
+                field="modification"
+                oneLogeBooking={regulierFields}
+                removeHandler={regulierRemove}
+                {...commonProps(index)}
+              />
+            </React.Fragment>
+          );
+        })}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Ajouter
+        </Button>
 
         <Typography variant="h6">Réservations exceptionnelles</Typography>
 
@@ -186,6 +213,20 @@ export default function Occupation(props) {
         <Typography variant="h6" />
         {calendrierMemoized}
       </form>
+
+      <DialogAddOccupation
+        open={open}
+        handleClose={() => setOpen(false)}
+        handleRendered={() => {}}
+        logeBooking={[getValues()]}
+        setLogeBooking={value => {
+          reset(value[0]);
+          onChangeHandler();
+        }}
+        date={moment()}
+        logesUtilisatrices={[]}
+        typeEdit="add_regulier"
+      />
     </div>
   );
 }

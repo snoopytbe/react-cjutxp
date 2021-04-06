@@ -47,8 +47,8 @@ export default function ControllerSelect(props) {
             {defaultValue !== "" && !listeChoix.includes(defaultValue) && (
               <MenuItem value={defaultValue}>{defaultValue}</MenuItem>
             )}
-            {listeChoix.map(item => (
-              <MenuItem key={item.id} value={item}>
+            {listeChoix?.map(item => (
+              <MenuItem key={item?.id} value={item}>
                 {item}
               </MenuItem>
             ))}

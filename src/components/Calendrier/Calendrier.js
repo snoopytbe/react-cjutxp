@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  annee,
-  mois,
-  zone,
-  joursInterdits,
-  periodesInterdites
-} from "../../data/constantes";
+import { annee, mois, zone, periodesInterdites } from "../../data/constantes";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Table from "@material-ui/core/Table";
@@ -21,7 +15,7 @@ import "moment/min/locales.min";
 import { estFerie } from "./jourFeries";
 import { estVacances, dateInList } from "./vacances";
 import { getListeDates } from "../Occupation/occupationMethods";
-import EditOccupation from "../Occupation/EditOccupationWindow";
+import DialogAddOccupation from "../Occupation/DialogAddOccupation";
 
 export default function Calendrier(props) {
   const { logeBooking, setLogeBooking } = props;
@@ -60,7 +54,7 @@ export default function Calendrier(props) {
 
   const handleDelete = () => {
     setTypeEdit("delete");
-    setOpen(true); 
+    setOpen(true);
   };
 
   const datesLogeBooking = logeBooking.map(item => getListeDates(item));
@@ -237,25 +231,16 @@ export default function Calendrier(props) {
           Supprimer
         </MenuItem>
       </Menu>
-      <Dialog
+      <DialogAddOccupation
         open={open}
-        onClose={handleClose}
-        onRendered={() => setActiveMenu({ general: false })}
-        aria-labelledby="form-dialog-title"
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogContent>
-          <EditOccupation
-            logeBooking={logeBooking}
-            setLogeBooking={setLogeBooking}
-            date={contextData?.date ?? null}
-            logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
-            setClose={handleClose}
-            typeEdit={typeEdit}
-          />
-        </DialogContent>
-      </Dialog>
+        handleClose={handleClose}
+        handleRendered={() => setActiveMenu({ general: false })}
+        logeBooking={logeBooking}
+        setLogeBooking={setLogeBooking}
+        date={contextData?.date ?? null}
+        logesUtilisatrices={contextData?.logesUtilisatrices ?? null}
+        typeEdit={typeEdit}
+      />
     </>
   );
 }
