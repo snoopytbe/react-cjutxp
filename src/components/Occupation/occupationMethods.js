@@ -27,7 +27,7 @@ export const getOccupationLogeDate = (logeBooking, loge, date) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la liste des dates des tenues à partir des données de réservation des loges
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const getListeDates = oneLogeBooking => {
+export const getListeDates = (oneLogeBooking, field = "all") => {
   const result = [];
 
   function giveDayNumber(dayToFind) {
@@ -36,58 +36,77 @@ export const getListeDates = oneLogeBooking => {
 
   var maDate = moment();
 
-  if (oneLogeBooking?.hasOwnProperty("regulier")) {
-    oneLogeBooking.regulier.forEach(reservation => {
-      // on s'assure que les données sont bien remplies
-      if (reservation.semaine) {
-        //on parcourt tous les mois de l'année
-        constantes.mois.forEach(mois => {
-          //il y a une tenue le nieme jour du mois
-          // ou nieme  est la premiere lettre de reservation.semaine
-          // le jour est reservation.jours
-          maDate = nthDay(
-            new Date(
-              constantes.annee + (mois.numero < 9 ? 1 : 0),
-              mois.numero - 1,
-              1
-            ),
-            giveDayNumber(reservation.jours),
-            reservation.semaine[0]
-          );
+  if (field === "all" || field === "regulier") {
+    if (oneLogeBooking?.hasOwnProperty("regulier")) {
+      oneLogeBooking.regulier.forEach(reservation => {
+        // on s'assure que les données sont bien remplies
+        if (reservation.semaine) {
+          //on parcourt tous les mois de l'année
+          constantes.mois.forEach(mois => {
+            //il y a une tenue le nieme jour du mois
+            // ou nieme  est la premiere lettre de reservation.semaine
+            // le jour est reservation.jours
+            maDate = nthDay(
+              new Date(
+                constantes.annee + (mois.numero < 9 ? 1 : 0),
+                mois.numero - 1,
+                1
+              ),
+              giveDayNumber(reservation.jours),
+              reservation.semaine[0]
+            );
+            maDate.isValid() &&
+              result.push({
+                date: maDate.locale("fr-FR"),
+                reservation: reservation
+              });
+          });
+        }
+      });
+    }
+  }
+
+  // Pour les modifications de réservations régulières on ne fait rien
+
+  // Pour les réservations exceptionnelles on ajoute simplement chacune des dates
+  if (field === "all" || field === "exceptionnel") {
+    if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
+      oneLogeBooking.exceptionnel.forEach(exceptionnel => {
+        //
+        if (exceptionnel.temple) {
+          maDate = moment(exceptionnel.date);
           maDate.isValid() &&
             result.push({
               date: maDate.locale("fr-FR"),
-              reservation: reservation
+              reservation: exceptionnel
             });
+        }
+      });
+    }
+  }
+
+  // On supprime les éventuels doublons
+  result = result.reduce(
+    (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+    []
+  );
+
+  // On liste les dates supprimées
+  let dateSupprimees = [];
+  if (oneLogeBooking?.hasOwnProperty("suppression")) {
+    oneLogeBooking.suppression.forEach(suppression => {
+      // Conversion de la date stockée en moment
+      maDate = moment(suppression.date, moment.ISO_8601);
+
+      if (maDate.isValid()) {
+        dateSupprimees.push({
+          date: maDate.locale("fr-FR")
         });
       }
     });
   }
 
-  // Pour les réservations exceptionnelles on ajoute simplement chacune des dates
-  if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
-    oneLogeBooking.exceptionnel.forEach(exceptionnel => {
-      //
-      if (exceptionnel.temple) {
-        maDate = moment(exceptionnel.date);
-        maDate.isValid() &&
-          result.push({
-            date: maDate.locale("fr-FR"),
-            reservation: exceptionnel
-          });
-      }
-    });
-  }
-
-  // On supprime les éventuels doublons
-  let resultSansDoublon = result.reduce(
-    (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
-    []
-  );
-
   // On enlève les dates supprimées
-  let resultWithDelete = resultSansDoublon;
-
   if (oneLogeBooking?.hasOwnProperty("suppression")) {
     oneLogeBooking.suppression.forEach(suppression => {
       // Conversion de la date stockée en moment
@@ -95,22 +114,17 @@ export const getListeDates = oneLogeBooking => {
 
       if (maDate.isValid()) {
         // On cherche la position de maDate dans resultWithDelete
-        let pos = posDateInList(
-          maDate,
-          resultWithDelete.map(item => item.date)
-        );
+        let pos = posDateInList(maDate, result.map(item => item.date));
         // On supprime cet élément
-        pos >= 0 && resultWithDelete.splice(pos, 1);
+        pos >= 0 && result.splice(pos, 1);
       }
     });
   }
 
   // Tri final
-  let resultTrie = resultWithDelete.sort(
-    (a, b) => a.date.valueOf() - b.date.valueOf()
-  );
+  result = result.sort((a, b) => a.date.valueOf() - b.date.valueOf());
 
-  return resultTrie;
+  return result;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +166,40 @@ export const texteReservations = oneLogeBooking => {
     });
   }
 
+  function texteModif(field, title) {
+    if (oneLogeBooking?.hasOwnProperty(field)) {
+      oneLogeBooking[field].forEach((item, index) => {
+        if (item.temple) {
+          if (index === 0) result += `\n${title} :\n`;
+          if (index > 0) result += ", ";
+          result +=
+            moment(item.date)
+              .locale("fr-FR")
+              .format("DD/MM/YYYY") + indexGenerator(item);
+        }
+      });
+    }
+  }
+
+  texteModif("modification", "Modifications de réservations");
+  texteModif("exceptionnel", "Réservations exceptionnelles");
+  texteModif("suppression", "Annulations exceptionnelles");
+
+  /*if (oneLogeBooking?.hasOwnProperty("modification")) {
+    oneLogeBooking["modification"].forEach((item, index) => {
+      if (item.temple) {
+        if (index === 0) result += "\nModifications de réservations :\n";
+        if (index > 0) result += ", ";
+        result +=
+          moment(item.date)
+            .locale("fr-FR")
+            .format("DD/MM/YYYY") + indexGenerator(item);
+      }
+    });
+  }
+
   if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
-    oneLogeBooking.exceptionnel.forEach((item, index) => {
+    oneLogeBooking["exceptionnel"].forEach((item, index) => {
       if (item.temple) {
         if (index === 0) result += "\nRéservations exceptionnelles :\n";
         if (index > 0) result += ", ";
@@ -166,7 +212,7 @@ export const texteReservations = oneLogeBooking => {
   }
 
   if (oneLogeBooking?.hasOwnProperty("suppression")) {
-    oneLogeBooking.suppression.forEach((item, index) => {
+    oneLogeBooking["suppression"].forEach((item, index) => {
       if (item.date) {
         if (index === 0) result += "\nAnnulations exceptionnelles :\n";
         if (index > 0) result += ", ";
@@ -175,7 +221,7 @@ export const texteReservations = oneLogeBooking => {
           .format("DD/MM/YYYY");
       }
     });
-  }
+  }*/
 
   return result;
 };

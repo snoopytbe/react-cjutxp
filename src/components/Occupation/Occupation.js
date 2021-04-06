@@ -12,6 +12,7 @@ import moment from "moment";
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
   const [open, setOpen] = React.useState(false);
+  const [typeEdit, setTypeEdit]=React.useState("")
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
@@ -25,6 +26,15 @@ export default function Occupation(props) {
   } = useFieldArray({
     control,
     name: "regulier"
+  });
+
+  const {
+    fields: modificationFields,
+    append: modificationAppend,
+    remove: modificationRemove
+  } = useFieldArray({
+    control,
+    name: "modification"
   });
 
   const {
@@ -141,6 +151,7 @@ export default function Occupation(props) {
           variant="contained"
           color="primary"
           onClick={() => {
+            setTypeEdit("add_regulier")
             setOpen(true);
           }}
         >
@@ -149,13 +160,15 @@ export default function Occupation(props) {
 
         <Typography variant="h6">Modifications exceptionnelles</Typography>
 
-        {modificationsFields.map((item, index) => {
+        {modificationFields.map((item, index) => {
           return (
             <React.Fragment key={item.id}>
               <PaperFieldOccupation
                 field="modification"
-                oneLogeBooking={regulierFields}
-                removeHandler={regulierRemove}
+                oneLogeBooking={modificationFields}
+                removeHandler={modificationRemove}
+                limit={listeDates}
+                highlight={listeDates}
                 {...commonProps(index)}
               />
             </React.Fragment>
@@ -165,6 +178,7 @@ export default function Occupation(props) {
           variant="contained"
           color="primary"
           onClick={() => {
+            setTypeEdit("modify_regulier")
             setOpen(true);
           }}
         >
@@ -225,7 +239,7 @@ export default function Occupation(props) {
         }}
         date={moment()}
         logesUtilisatrices={[]}
-        typeEdit="add_regulier"
+        typeEdit={typeEdit}
       />
     </div>
   );
