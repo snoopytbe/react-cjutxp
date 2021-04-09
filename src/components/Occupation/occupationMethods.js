@@ -28,10 +28,31 @@ export const getOccupationLogeDate = (logeBooking, loge, date) => {
 // Retourne la liste des dates des tenues à partir des données de réservation des loges
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const getListeDates = (oneLogeBooking, field = "all") => {
-  const result = [];
+  // field permet de choisir sur quels champs on utilise la fonction
+  // field peut être égal à "all" (par défaut) auquel cas on recupère la liste
+  // en prenant en compte tous les champs
+  var result = [];
 
   function giveDayNumber(dayToFind) {
     return constantes.jours.find(value => dayToFind === value.nom)?.numero;
+  }
+
+  function getFieldListeDate(field, dateConvFunction, propToCheck = null) {
+    // Pour les réservations exceptionnelles on ajoute simplement chacune des dates
+    let result = [];
+    if (oneLogeBooking?.hasOwnProperty(field)) {
+      oneLogeBooking[field].forEach(item => {
+        if (item[propToCheck] || propToCheck === null) {
+          maDate = dateConvFunction(item.date) ;
+          maDate.isValid() &&
+            result.push({
+              date: maDate.locale("fr-FR"),
+              reservation: item
+            });
+        }
+      });
+    }
+    return result;
   }
 
   var maDate = moment();
@@ -67,22 +88,17 @@ export const getListeDates = (oneLogeBooking, field = "all") => {
   }
 
   // Pour les modifications de réservations régulières on ne fait rien
+  if (field === "modification") {
+    result.concat(
+      getFieldListeDate("modification", date => moment(date), "temple")
+    );
+  }
 
   // Pour les réservations exceptionnelles on ajoute simplement chacune des dates
   if (field === "all" || field === "exceptionnel") {
-    if (oneLogeBooking?.hasOwnProperty("exceptionnel")) {
-      oneLogeBooking.exceptionnel.forEach(exceptionnel => {
-        //
-        if (exceptionnel.temple) {
-          maDate = moment(exceptionnel.date);
-          maDate.isValid() &&
-            result.push({
-              date: maDate.locale("fr-FR"),
-              reservation: exceptionnel
-            });
-        }
-      });
-    }
+    result.concat(
+      getFieldListeDate("exceptionnel", date => moment(date), "temple")
+    );
   }
 
   // On supprime les éventuels doublons
@@ -92,32 +108,19 @@ export const getListeDates = (oneLogeBooking, field = "all") => {
   );
 
   // On liste les dates supprimées
-  let dateSupprimees = [];
-  if (oneLogeBooking?.hasOwnProperty("suppression")) {
-    oneLogeBooking.suppression.forEach(suppression => {
-      // Conversion de la date stockée en moment
-      maDate = moment(suppression.date, moment.ISO_8601);
+  let dateSupprimees = getFieldListeDate("suppression", date =>
+    moment(date, moment.ISO_8601)
+  );
 
-      if (maDate.isValid()) {
-        dateSupprimees.push({
-          date: maDate.locale("fr-FR")
-        });
-      }
-    });
-  }
+  if (field === "suppression") result = dateSupprimees;
 
   // On enlève les dates supprimées
-  if (oneLogeBooking?.hasOwnProperty("suppression")) {
-    oneLogeBooking.suppression.forEach(suppression => {
-      // Conversion de la date stockée en moment
-      maDate = moment(suppression.date, moment.ISO_8601);
-
-      if (maDate.isValid()) {
-        // On cherche la position de maDate dans resultWithDelete
-        let pos = posDateInList(maDate, result.map(item => item.date));
-        // On supprime cet élément
-        pos >= 0 && result.splice(pos, 1);
-      }
+  if (field === "all") {
+    dateSupprimees.forEach(suppression => {
+      // On cherche la position de maDate dans resultWithDelete
+      let pos = posDateInList(suppression.date, result.map(item => item.date));
+      // On supprime cet élément
+      pos >= 0 && result.splice(pos, 1);
     });
   }
 
