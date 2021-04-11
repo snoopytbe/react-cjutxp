@@ -5,11 +5,10 @@ export function nthDay(dt, day, number) {
   // dt : date
   // day : jour de la semaine
   // number : numero du jour = nieme
-  var result = moment();
-  var firstDay = dt.date(1).day(day);
+  var firstDay = dt.clone().date(1).day(day);
   // Si firstDay est le mois précédent il faut décaler firstDay d'une semaine
   if (firstDay.isBefore(dt.startOf("month"))) firstDay.add(7, "days");
-  result = firstDay.add((number - 1) * 7, "days");
+  var result = firstDay.clone().add((number - 1) * 7, "days");
   if (result.isAfter(dt.endOf("month"))) result = moment.invalid();
   return result;
 }
@@ -26,7 +25,7 @@ export function dateInList(dt, liste) {
 
 function estToussaint(dt) {
   // 3e samedi d'octobre
-  var debutVacances = nthDay(moment(new Date(dt.year(), 9, 1), 6, 3));
+  var debutVacances = nthDay(moment([dt.year(), 9, 1]), 6, 3);
   var finVacances = debutVacances.clone().add(15, "days");
   return (
     debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0
@@ -36,12 +35,12 @@ function estToussaint(dt) {
 function debutVacancesNoel(annee) {
   // Démarre le samedi qui précède Noël
   // sauf si Noel est un dimanche auquel cas cela démarre le samedi 8 jours avant
-  var Noel = moment(new Date(annee, 11, 25));
+  var Noel = moment([annee, 11, 25]);
   return Noel.clone().day(6 - (Noel.day() === 0 ? 2 : 1) * 7);
 }
 
 function finVacancesNoel(annee) {
-  var Noel = moment(new Date(annee, 11, 25));
+  var Noel = moment([annee, 11, 25]);
   return debutVacancesNoel(annee).add(15 + (Noel.day() === 0 && 1), "days");
 }
 

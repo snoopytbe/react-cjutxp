@@ -133,10 +133,7 @@ export default function EditOccupation(props) {
 
   const paperFieldChangeHandler = e => {
     if (field === "modification") {
-      if (
-        moment(getValues("modification[0].date"))?.format() !==
-        moment(formDate).format()
-      ) {
+      if (!moment(formDate).isSame(moment(getValues("modification[0].date")))) {
         setFormDate(getValues("modification[0].date"));
         let occupation = getOccupationLogeDate(
           logeBooking,

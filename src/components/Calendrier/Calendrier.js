@@ -130,10 +130,11 @@ export default function Calendrier(props) {
     }
 
     for (let i = 0; i < 11; i++) {
-      let myDate = moment(
-        `${index + 1}/${i < 4 ? i + 9 : i - 3}/${i < 4 ? annee : annee + 1}`,
-        "DD/MM/YYYY"
-      );
+      let myDate = moment([
+        i < 4 ? annee : annee + 1,
+        i < 4 ? i + 8 : i - 4,
+        index + 1
+      ]);
       myDate.locale("fr-FR");
       let isValidDate = myDate.isValid();
       let className = classDescription(myDate);

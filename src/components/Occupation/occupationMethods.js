@@ -19,7 +19,7 @@ export const getOccupationLogeDate = (logeBooking, loge, date) => {
   // Les dates de réservation de la loge
   let listeDates = getListeDates(foundLogeBooking);
   // On recherche la position de la date recherchée dans la liste des dates
-  let index = posDateInList(date, listeDates.map(item => item.date));
+  let index = posDateInList(moment(date), listeDates.map(item => item.date));
   // Puis on donne la reservation correspondante
   return listeDates[index]?.reservation ?? null;
 };
@@ -30,9 +30,9 @@ function giveDayNumber(dayToFind) {
 
 // Permet de convertir une occupation en un élément de la liste de dates
 // utilise une fonction de conversion d'une occupation en date au format moment
-function convertDateToElement(occupation, occupationToDate) {
+function convertDateToElement(occupation, FctOccupationToDate) {
   var element = [];
-  var maDate = occupationToDate(occupation.date);
+  var maDate = FctOccupationToDate(occupation.date);
   if (maDate.isValid())
     element.push({
       date: maDate.locale("fr-FR"),
@@ -44,7 +44,7 @@ function convertDateToElement(occupation, occupationToDate) {
 // Fonction de conversion d'une occupation régulière en date au format moment
 function occupationReguliereToDate(occupation, mois) {
   return nthDay(
-    moment(new Date(constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1)),
+    moment([constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1]),
     giveDayNumber(occupation?.jours),
     occupation?.semaine[0]
   );
@@ -108,7 +108,7 @@ export const getListeDates = oneLogeBooking => {
   // On enlève les dates supprimées
   dateSupprimees.forEach(suppression => {
     // On cherche la position de maDate dans resultWithDelete
-    let pos = posDateInList(suppression.date, result.map(item => item.date));
+    let pos = posDateInList(moment(suppression.date), result.map(item => item.date));
     // On supprime cet élément
     pos >= 0 && result.splice(pos, 1);
   });
