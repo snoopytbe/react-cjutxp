@@ -4,7 +4,6 @@ import { Button, Typography } from "@material-ui/core";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
-import moment from "moment";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
@@ -99,8 +98,11 @@ export default function EditOccupation(props) {
         });
         break;
 
+      case "exceptionnel":
+      case "modification":
       default:
-        // = "exceptionnel"
+        newLogeBooking[idModified][field] =
+          newLogeBooking[idModified][field] || [];
         newLogeBooking[idModified][field].push({
           date: shortcut.date,
           temple: shortcut.temple,
@@ -116,39 +118,19 @@ export default function EditOccupation(props) {
     setLogeBooking(newLogeBooking);
   };
 
-  const logeChangeHandler = e => {
-    if (field === "exceptionnel") {
-      let occupation = getOccupationLogeDate(
-        logeBooking,
-        getValues("loge"),
-        date
-      );
-      setValue("exceptionnel[0].temple", occupation?.temple ?? "");
-      setValue("exceptionnel[0].sallehumide", occupation?.sallehumide ?? "");
-      setValue("exceptionnel[0].heure", occupation?.heure ?? "");
-    }
-  };
-
-  const [formDate, setFormDate] = React.useState(date);
-
-  const paperFieldChangeHandler = e => {
-    if (field === "modification") {
-      if (!moment(formDate).isSame(moment(getValues("modification[0].date")))) {
-        setFormDate(getValues("modification[0].date"));
-        let occupation = getOccupationLogeDate(
-          logeBooking,
-          getValues("loge"),
-          moment(getValues("modification[0].date"))
-        );
-        setValue("modification[0].temple", occupation?.temple ?? "");
-        setValue("modification[0].sallehumide", occupation?.sallehumide ?? "");
-        setValue("modification[0].heure", occupation?.heure ?? "");
-      }
-    }
+  const changeHandler = e => {
+    let occupation = getOccupationLogeDate(
+      logeBooking,
+      getValues("loge"),
+      getValues(`${field}[0].date`)
+    );
+    setValue(`${field}[0].temple`, occupation?.temple ?? "");
+    setValue(`${field}[0].sallehumide`, occupation?.sallehumide ?? "");
+    setValue(`${field}[0].heure`, occupation?.heure ?? "");
   };
 
   React.useEffect(() => {
-    logeChangeHandler();
+    changeHandler();
   }, []);
 
   const defaultValues = [
@@ -175,7 +157,7 @@ export default function EditOccupation(props) {
           defaultValue={listeLoges[0]}
           listeChoix={listeLoges}
           required
-          onChangeHandler={logeChangeHandler}
+          onChangeHandler={changeHandler}
         />
         {typeEdit !== "delete" && (
           <>
@@ -184,7 +166,7 @@ export default function EditOccupation(props) {
               oneLogeBooking={defaultValues}
               bookingIndex={0}
               control={control}
-              onChangeHandler={paperFieldChangeHandler}
+              onChangeHandler={changeHandler}
               limit={limit}
               highlight={highlight}
             />

@@ -23,7 +23,7 @@ export const initialValuesComplete = [
         temple: "Berteaux (ETG)",
         sallehumide: "Salle humide Jardin",
         heure: "20h30"
-      },
+      }
     ],
     exceptionnel: [
       {
@@ -33,6 +33,7 @@ export const initialValuesComplete = [
         heure: "20h30"
       }
     ],
+    modification: [],
     suppression: [
       {
         date: ""
@@ -56,7 +57,7 @@ export const initialValuesComplete = [
         temple: "Ramsay (RDC)",
         sallehumide: "Salle humide Cuisine",
         heure: "20h00"
-      },
+      }
     ],
     exceptionnel: [
       {

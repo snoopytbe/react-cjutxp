@@ -168,8 +168,8 @@ export default function Occupation(props) {
                 field="modification"
                 oneLogeBooking={modificationFields}
                 removeHandler={modificationRemove}
-                limit={listeDatesRegulier}
-                highlight={listeDatesRegulier}
+                limit={getListeDateFromField(getValues(), "regulier")}
+                highlight={listeDates}
                 {...commonProps(index)}
               />
             </React.Fragment>
