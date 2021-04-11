@@ -85,13 +85,11 @@ export function estFerie(myDate) {
   return (
     AreDateEquals(NouvelAn(year), dt) ||
     AreDateEquals(LundiDePaques(year), dt) ||
-    AreDateEquals(LundiDePaques(year), dt) ||
     AreDateEquals(PremierMai(year), dt) ||
     AreDateEquals(Ascension(year), dt) ||
     AreDateEquals(HuitMai(year), dt) ||
     AreDateEquals(LundiDePentecote(year), dt) ||
     AreDateEquals(Ascension(year), dt) ||
-    AreDateEquals(LundiDePentecote(year), dt) ||
     AreDateEquals(FeteNationale(year), dt) ||
     AreDateEquals(Assomption(year), dt) ||
     AreDateEquals(Toussaint(year), dt) ||

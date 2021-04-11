@@ -146,7 +146,7 @@
    * When `wordWrap` = "bounded", the lines will wrap at min(viewport width, wordWrapColumn).
    * Defaults to "off".
    */
-   "editor.wordWrap": "off",
+   //"editor.wordWrap": "off",
   /**
    * Control the wrapping of the editor.
    * When `wordWrap` = "off", the lines will never wrap.
@@ -155,7 +155,7 @@
    * When `wordWrap` = "bounded", the lines will wrap at min(viewport width, wordWrapColumn).
    * Defaults to 80.
    */
-   "editor.wordWrapColumn": 1200,
+   //"editor.wordWrapColumn": 1200,
   /**
    * Force word wrapping when the text appears to be of a minified/generated file.
    * Defaults to true.

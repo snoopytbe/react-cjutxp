@@ -44,14 +44,14 @@ function convertDateToElement(occupation, occupationToDate) {
 // Fonction de conversion d'une occupation régulière en date au format moment
 function occupationReguliereToDate(occupation, mois) {
   return nthDay(
-    new Date(constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1),
+    moment(new Date(constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1)),
     giveDayNumber(occupation?.jours),
     occupation?.semaine[0]
   );
 }
 
 // Permet d'obtenir la liste de dates des tenues pour un field donné
-function getListeDateFromField(oneLogeBooking, field) {
+export function getListeDateFromField(oneLogeBooking, field) {
   var liste = [];
   if (oneLogeBooking?.hasOwnProperty(field)) {
     oneLogeBooking[field].forEach(item => {

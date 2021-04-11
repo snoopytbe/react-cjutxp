@@ -12,18 +12,10 @@ function ControllerSwitch(props) {
 
   switch (type) {
     case "Select":
-      return (
-        <ControllerSelect
-          {...controllerProperties}
-        />
-      );
+      return <ControllerSelect {...controllerProperties} />;
       break;
     case "DatePicker":
-      return (
-        <ControllerDatePicker
-          {...controllerProperties}
-        />
-      );
+      return <ControllerDatePicker {...controllerProperties} />;
       break;
     default:
       "";
@@ -39,8 +31,6 @@ export default function PaperFieldOccupation(props) {
     removeHandler,
     oneLogeBooking, // objet décrivant la réservation de la loge
     noDelete,
-    highlight,
-    limit,
     ...others
   } = props;
 
@@ -65,13 +55,12 @@ export default function PaperFieldOccupation(props) {
                   dataName={item.nom}
                   control={control}
                   onChangeHandler={onChangeHandler}
-                  required={true} // seul le dernier champs n'est pas obligatoire
+                  required={true}
                   label={item.displayName}
                   listeChoix={item.liste ?? ""}
-                  highlight={highlight}
-                  limit={limit}
                   defaultValue={oneLogeBooking[bookingIndex]?.[item.nom] ?? ""}
                   type={item.type}
+                  {...others}
                 />
               </Grid>
             </React.Fragment>

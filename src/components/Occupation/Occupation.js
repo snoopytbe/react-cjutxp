@@ -6,13 +6,14 @@ import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
 import DialogAddOccupation from "./DialogAddOccupation";
-import moment from "moment";
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
   const [open, setOpen] = React.useState(false);
   const [typeEdit, setTypeEdit] = React.useState("");
+  const [highlight, setHighlight]=React.useState([])
+  const [limit, setLimit]=React.useState([])
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
@@ -167,8 +168,8 @@ export default function Occupation(props) {
                 field="modification"
                 oneLogeBooking={modificationFields}
                 removeHandler={modificationRemove}
-                limit={getListeDateFromField("regulier")}
-                highlight={getListeDateFromField("regulier")}
+                limit={listeDatesRegulier}
+                highlight={listeDatesRegulier}
                 {...commonProps(index)}
               />
             </React.Fragment>
@@ -179,6 +180,8 @@ export default function Occupation(props) {
           color="primary"
           onClick={() => {
             setTypeEdit("modify_regulier");
+            setLimit(getListeDateFromField(getValues(), "regulier"));
+            setHighlight(listeDates);
             setOpen(true);
           }}
         >
@@ -237,9 +240,10 @@ export default function Occupation(props) {
           reset(value[0]);
           onChangeHandler();
         }}
-        date={moment()}
         logesUtilisatrices={[]}
         typeEdit={typeEdit}
+        limit={limit}
+        highlight={highlight}
       />
     </div>
   );

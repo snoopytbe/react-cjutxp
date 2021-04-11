@@ -6,27 +6,27 @@ export function nthDay(dt, day, number) {
   // day : jour de la semaine
   // number : numero du jour = nieme
   var result = moment();
-  var firstDay = moment(dt)
-    .date(1)
-    .day(day);
+  var firstDay = dt.date(1).day(day);
   // Si firstDay est le mois précédent il faut décaler firstDay d'une semaine
-  if (firstDay.isBefore(moment(dt).startOf("month"))) firstDay.add(7, "days");
+  if (firstDay.isBefore(dt.startOf("month"))) firstDay.add(7, "days");
   result = firstDay.add((number - 1) * 7, "days");
-  if (result.isAfter(moment(dt).endOf("month"))) result = moment.invalid();
+  if (result.isAfter(dt.endOf("month"))) result = moment.invalid();
   return result;
 }
 
 export function posDateInList(dt, liste) {
-  return dt?.isValid() ? liste.findIndex(item => dt.diff(item, "days") === 0) : -1
+  return dt?.isValid()
+    ? liste.findIndex(item => dt.diff(item, "days") === 0)
+    : -1;
 }
 
 export function dateInList(dt, liste) {
-  return posDateInList(dt, liste) >= 0 
+  return posDateInList(dt, liste) >= 0;
 }
 
 function estToussaint(dt) {
   // 3e samedi d'octobre
-  var debutVacances = nthDay(new Date(dt.year(), 9, 1), 6, 3);
+  var debutVacances = nthDay(moment(new Date(dt.year(), 9, 1), 6, 3));
   var finVacances = debutVacances.clone().add(15, "days");
   return (
     debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0

@@ -4,16 +4,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import EditOccupationWindow from "../Occupation/EditOccupationWindow";
 
 export default function DialogAddOccupation(props) {
-  const {
-    open,
-    handleClose,
-    handleRendered,
-    logeBooking,
-    setLogeBooking,
-    date,
-    logesUtilisatrices,
-    typeEdit
-  } = props;
+  const { open, handleClose, handleRendered, ...others } = props;
 
   return (
     <Dialog
@@ -25,14 +16,7 @@ export default function DialogAddOccupation(props) {
       maxWidth="md"
     >
       <DialogContent>
-        <EditOccupationWindow
-          logeBooking={logeBooking}
-          setLogeBooking={setLogeBooking}
-          date={date}
-          logesUtilisatrices={logesUtilisatrices}
-          setClose={handleClose}
-          typeEdit={typeEdit}
-        />
+        <EditOccupationWindow setClose={handleClose} {...others} />
       </DialogContent>
     </Dialog>
   );

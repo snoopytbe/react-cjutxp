@@ -3,11 +3,8 @@ import { useForm } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import PaperFieldOccupation from "./PaperFieldOccupation";
-import {
-  getOccupationLogeDate,
-  getIdLoge,
-  isEmptyLastField
-} from "./occupationMethods";
+import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
+import moment from "moment";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
@@ -17,7 +14,9 @@ export default function EditOccupation(props) {
     date,
     setClose,
     logesUtilisatrices,
-    typeEdit
+    typeEdit,
+    limit,
+    highlight
   } = props;
 
   // Liste des loges
@@ -130,13 +129,34 @@ export default function EditOccupation(props) {
     }
   };
 
+  const [formDate, setFormDate] = React.useState(date);
+
+  const paperFieldChangeHandler = e => {
+    if (field === "modification") {
+      if (
+        moment(getValues("modification[0].date"))?.format() !==
+        moment(formDate).format()
+      ) {
+        setFormDate(getValues("modification[0].date"));
+        let occupation = getOccupationLogeDate(
+          logeBooking,
+          getValues("loge"),
+          moment(getValues("modification[0].date"))
+        );
+        setValue("modification[0].temple", occupation?.temple ?? "");
+        setValue("modification[0].sallehumide", occupation?.sallehumide ?? "");
+        setValue("modification[0].heure", occupation?.heure ?? "");
+      }
+    }
+  };
+
   React.useEffect(() => {
     logeChangeHandler();
   }, []);
 
   const defaultValues = [
     {
-      date: date?.format() ?? new Date(),
+      date: date?.format(),
       semaine: "",
       jour: "",
       temple: "",
@@ -145,9 +165,7 @@ export default function EditOccupation(props) {
     }
   ];
 
-  const { control, handleSubmit, getValues, setValue } = useForm({
-    defaultValues: defaultValues
-  });
+  const { control, handleSubmit, getValues, setValue } = useForm({});
 
   return (
     <div style={{ flexGrow: 1 }}>
@@ -169,7 +187,9 @@ export default function EditOccupation(props) {
               oneLogeBooking={defaultValues}
               bookingIndex={0}
               control={control}
-              onChangeHandler={() => {}}
+              onChangeHandler={paperFieldChangeHandler}
+              limit={limit}
+              highlight={highlight}
             />
           </>
         )}
