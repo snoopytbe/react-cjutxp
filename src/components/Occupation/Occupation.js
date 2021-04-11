@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
-import { getListeDates, checkLastField } from "./occupationMethods";
+import { getListeDates, getListeDateFromField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
@@ -12,7 +12,7 @@ import moment from "moment";
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
   const [open, setOpen] = React.useState(false);
-  const [typeEdit, setTypeEdit]=React.useState("")
+  const [typeEdit, setTypeEdit] = React.useState("");
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
@@ -151,7 +151,7 @@ export default function Occupation(props) {
           variant="contained"
           color="primary"
           onClick={() => {
-            setTypeEdit("add_regulier")
+            setTypeEdit("add_regulier");
             setOpen(true);
           }}
         >
@@ -167,8 +167,8 @@ export default function Occupation(props) {
                 field="modification"
                 oneLogeBooking={modificationFields}
                 removeHandler={modificationRemove}
-                limit={listeDates}
-                highlight={listeDates}
+                limit={getListeDateFromField("regulier")}
+                highlight={getListeDateFromField("regulier")}
                 {...commonProps(index)}
               />
             </React.Fragment>
@@ -178,7 +178,7 @@ export default function Occupation(props) {
           variant="contained"
           color="primary"
           onClick={() => {
-            setTypeEdit("modify_regulier")
+            setTypeEdit("modify_regulier");
             setOpen(true);
           }}
         >

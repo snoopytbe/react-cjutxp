@@ -27,22 +27,35 @@ export default function EditOccupation(props) {
   // Entete affiche
   var texteEntete = "";
 
+  var ListeLogesUtilisatrices =
+    logesUtilisatrices?.map(loge => loge.loge) ?? [];
+  var ListeLogesComplete = logeBooking?.map(loge => loge.loge) ?? [];
+
   switch (typeEdit) {
     case "delete":
       field = "suppression";
-      listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
+      listeLoges = ListeLogesUtilisatrices;
       texteEntete = "Suppression de réservation";
       break;
 
     case "add_regulier":
       field = "regulier";
-      listeLoges = logeBooking?.map(loge => loge.loge) ?? [];
+      listeLoges = ListeLogesComplete;
       texteEntete = "Ajout de réservation";
+      break;
+
+    case "modify_regulier":
+      field = "modification";
+      listeLoges =
+        ListeLogesUtilisatrices.length > 0
+          ? ListeLogesUtilisatrices
+          : ListeLogesComplete;
+      texteEntete = "Modification d'une réservation récurrente";
       break;
 
     case "modify":
       field = "exceptionnel";
-      listeLoges = logesUtilisatrices?.map(loge => loge.loge) ?? [];
+      listeLoges = ListeLogesUtilisatrices;
       texteEntete = "Modification de réservation";
       break;
 
@@ -99,13 +112,13 @@ export default function EditOccupation(props) {
 
     // Fermeture de la fenêtre
     setClose(true);
-    
+
     //Sauvegarde
     setLogeBooking(newLogeBooking);
   };
 
   const logeChangeHandler = e => {
-    if ((field === "exceptionnel")) {
+    if (field === "exceptionnel") {
       let occupation = getOccupationLogeDate(
         logeBooking,
         getValues("loge"),
