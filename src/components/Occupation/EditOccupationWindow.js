@@ -80,42 +80,70 @@ export default function EditOccupation(props) {
 
     var shortcut = update[field][0];
 
-    // On ajoute les nouvelles données
+    // On regarde s'il y a une erreur
+    var isError = false;
     switch (field) {
-      case "suppression":
-        newLogeBooking[idModified][field].push({
-          date: date
-        });
-        break;
+      case "modification":
+        let occupation = getOccupationLogeDate(
+          logeBooking,
+          update.loge,
+          shortcut.date
+        );
 
-      case "regulier":
-        newLogeBooking[idModified][field].push({
-          jours: shortcut.jours,
-          semaine: shortcut.semaine,
-          temple: shortcut.temple,
-          sallehumide: shortcut.sallehumide,
-          heure: shortcut.heure
+        isError =
+          shortcut.temple === occupation?.temple &&
+          shortcut.sallehumide === occupation?.sallehumide &&
+          shortcut.heure === occupation?.heure;
+
+        setError("loge", {
+          type: "manual",
+          message: "Erreur : réservation identique"
         });
         break;
 
       case "exceptionnel":
       case "modification":
       default:
-        newLogeBooking[idModified][field] =
-          newLogeBooking[idModified][field] || [];
-        newLogeBooking[idModified][field].push({
-          date: shortcut.date,
-          temple: shortcut.temple,
-          sallehumide: shortcut.sallehumide,
-          heure: shortcut.heure
-        });
     }
 
-    // Fermeture de la fenêtre
-    setClose(true);
+    // On ajoute les nouvelles données
+    if (!isError) {
+      switch (field) {
+        case "suppression":
+          newLogeBooking[idModified][field].push({
+            date: date
+          });
+          break;
 
-    //Sauvegarde
-    setLogeBooking(newLogeBooking);
+        case "regulier":
+          newLogeBooking[idModified][field].push({
+            jours: shortcut.jours,
+            semaine: shortcut.semaine,
+            temple: shortcut.temple,
+            sallehumide: shortcut.sallehumide,
+            heure: shortcut.heure
+          });
+          break;
+
+        case "exceptionnel":
+        case "modification":
+        default:
+          newLogeBooking[idModified][field] =
+            newLogeBooking[idModified][field] || [];
+          newLogeBooking[idModified][field].push({
+            date: shortcut.date,
+            temple: shortcut.temple,
+            sallehumide: shortcut.sallehumide,
+            heure: shortcut.heure
+          });
+      }
+
+      // Fermeture de la fenêtre
+      setClose(true);
+
+      //Sauvegarde
+      setLogeBooking(newLogeBooking);
+    }
   };
 
   const changeHandler = e => {
@@ -144,12 +172,22 @@ export default function EditOccupation(props) {
     }
   ];
 
-  const { control, handleSubmit, getValues, setValue } = useForm({});
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    setError,
+    errors
+  } = useForm({});
 
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">{texteEntete}</Typography>
+        {errors.loge && (
+          <Typography variant="h6">{errors.loge.message}</Typography>
+        )}
         <ControllerSelect
           name="loge"
           label="Loge"

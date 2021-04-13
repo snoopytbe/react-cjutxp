@@ -6,14 +6,15 @@ import Calendrier from "../Calendrier/Calendrier";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
 import DialogAddOccupation from "./DialogAddOccupation";
+import { modeleFormulaire } from "../../data/constantes";
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
   const [open, setOpen] = React.useState(false);
   const [typeEdit, setTypeEdit] = React.useState("");
-  const [highlight, setHighlight]=React.useState([])
-  const [limit, setLimit]=React.useState([])
+  const [highlight, setHighlight] = React.useState([]);
+  const [limit, setLimit] = React.useState([]);
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
@@ -102,6 +103,24 @@ export default function Occupation(props) {
     };
   }
 
+  function onClickAdd(field) {
+    switch (field) {
+      case "regulier":
+        setTypeEdit("add_regulier");
+        break;
+
+      case "modification":
+        setTypeEdit("modify_regulier");
+        setLimit(getListeDateFromField(getValues(), "regulier"));
+        setHighlight(listeDates);
+        break;
+
+      default:
+    }
+
+    setOpen(true);
+  }
+
   return (
     <div style={{ flexGrow: 1 }}>
       <Typography variant="h4">Réservation</Typography>
@@ -151,10 +170,7 @@ export default function Occupation(props) {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => {
-            setTypeEdit("add_regulier");
-            setOpen(true);
-          }}
+          onClick={() => onClickAdd("regulier")}
         >
           Ajouter
         </Button>
@@ -178,12 +194,7 @@ export default function Occupation(props) {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => {
-            setTypeEdit("modify_regulier");
-            setLimit(getListeDateFromField(getValues(), "regulier"));
-            setHighlight(listeDates);
-            setOpen(true);
-          }}
+          onClick={() => onClickAdd("modification")}
         >
           Ajouter
         </Button>
