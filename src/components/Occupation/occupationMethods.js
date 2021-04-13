@@ -24,6 +24,8 @@ export const getOccupationLogeDate = (logeBooking, loge, date) => {
   return listeDates[index]?.reservation ?? null;
 };
 
+
+
 function giveDayNumber(dayToFind) {
   return constantes.jours.find(value => dayToFind === value.nom)?.numero;
 }

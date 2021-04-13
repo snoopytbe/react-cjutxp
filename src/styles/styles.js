@@ -72,7 +72,8 @@ export const theme = createMuiTheme({
   },
   typography: {
     h4: { color: "#303f9f", textAlign: "center" },
-    h6: { color: "#7986cb", padding: "10px 0px 5px 0px" }
+    h6: { color: "#7986cb", padding: "10px 0px 5px 0px" },
+    subtitle1 : { color: "#ff0000", padding: "10px 0px 5px 0px" },
   },
   overrides: {
     MuiInputBase: {

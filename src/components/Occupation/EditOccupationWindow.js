@@ -83,6 +83,7 @@ export default function EditOccupation(props) {
     // On regarde s'il y a une erreur
     var isError = false;
     switch (field) {
+      case "exceptionnel":
       case "modification":
         let occupation = getOccupationLogeDate(
           logeBooking,
@@ -97,12 +98,29 @@ export default function EditOccupation(props) {
 
         setError("loge", {
           type: "manual",
-          message: "Erreur : réservation identique"
+          message: `Erreur : aucune modification n'a été apportée le ${shortcut.date.format(
+            "DD/MM/YYYY"
+          )}`
         });
         break;
 
-      case "exceptionnel":
-      case "modification":
+      case "regulier":
+        // On recherche les réservations de la loge
+        let foundLogeBooking = logeBooking[idModified][field].find(
+          item =>
+            item.jours === shortcut.jours && item.semaine === shortcut.semaine
+        );
+        isError = foundLogeBooking ? true : false;
+
+        setError("loge", {
+          type: "manual",
+          message: `Erreur : il existe déjà une réservation le ${
+            shortcut.semaine
+          }e ${shortcut.jours}`
+        });
+
+        break;
+
       default:
     }
 
@@ -146,15 +164,26 @@ export default function EditOccupation(props) {
     }
   };
 
+  const [bufferLoge, setBufferLoge] = React.useState("");
+  const [bufferDate, setBufferDate] = React.useState("");
+
   const changeHandler = e => {
-    let occupation = getOccupationLogeDate(
-      logeBooking,
-      getValues("loge"),
-      getValues(`${field}[0].date`)
-    );
-    setValue(`${field}[0].temple`, occupation?.temple ?? "");
-    setValue(`${field}[0].sallehumide`, occupation?.sallehumide ?? "");
-    setValue(`${field}[0].heure`, occupation?.heure ?? "");
+    if (
+      getValues("loge") !== bufferLoge ||
+      getValues(`${field}[0].date`) !== bufferDate
+    ) {
+      setBufferLoge(getValues("loge"));
+      setBufferDate(getValues(`${field}[0].date`));
+
+      let occupation = getOccupationLogeDate(
+        logeBooking,
+        getValues("loge"),
+        getValues(`${field}[0].date`)
+      );
+      setValue(`${field}[0].temple`, occupation?.temple ?? "");
+      setValue(`${field}[0].sallehumide`, occupation?.sallehumide ?? "");
+      setValue(`${field}[0].heure`, occupation?.heure ?? "");
+    }
   };
 
   React.useEffect(() => {
@@ -186,7 +215,7 @@ export default function EditOccupation(props) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">{texteEntete}</Typography>
         {errors.loge && (
-          <Typography variant="h6">{errors.loge.message}</Typography>
+          <Typography variant="subtitle1">{errors.loge.message}</Typography>
         )}
         <ControllerSelect
           name="loge"
