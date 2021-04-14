@@ -115,6 +115,12 @@ export default function Occupation(props) {
         setHighlight(listeDates);
         break;
 
+      case "exceptionnel":
+        setTypeEdit("add");
+        setLimit([])
+        setHighlight(listeDates);
+        break;
+
       default:
     }
 
@@ -123,7 +129,7 @@ export default function Occupation(props) {
 
   return (
     <div style={{ flexGrow: 1 }}>
-      <Typography variant="h4">Réservation</Typography>
+      <Typography variant="h4">Réservations</Typography>
       <Button
         variant="contained"
         color="primary"
@@ -214,6 +220,13 @@ export default function Occupation(props) {
             </React.Fragment>
           );
         })}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => onClickAdd("exceptionnel")}
+        >
+          Ajouter
+        </Button>
 
         <Typography variant="h6">
           Suppression exceptionnelle de réservation

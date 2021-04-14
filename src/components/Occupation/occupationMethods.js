@@ -24,8 +24,6 @@ export const getOccupationLogeDate = (logeBooking, loge, date) => {
   return listeDates[index]?.reservation ?? null;
 };
 
-
-
 function giveDayNumber(dayToFind) {
   return constantes.jours.find(value => dayToFind === value.nom)?.numero;
 }
@@ -53,7 +51,7 @@ function occupationReguliereToDate(occupation, mois) {
 }
 
 // Permet d'obtenir la liste de dates des tenues pour un field donné
-export function getListeDateFromField(oneLogeBooking, field) {
+export function getListeDateFromField(oneLogeBooking, field, inverse = false) {
   var liste = [];
   if (oneLogeBooking?.hasOwnProperty(field)) {
     oneLogeBooking[field].forEach(item => {
@@ -90,7 +88,7 @@ export function getListeDateFromField(oneLogeBooking, field) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la liste des dates des tenues à partir des données de réservation des loges
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const getListeDates = oneLogeBooking => {
+export const getListeDates = (oneLogeBooking, inverse = false) => {
   var result = [];
 
   // On récupère les dates de réservations régulières et exceptionnelles
@@ -110,10 +108,29 @@ export const getListeDates = oneLogeBooking => {
   // On enlève les dates supprimées
   dateSupprimees.forEach(suppression => {
     // On cherche la position de maDate dans resultWithDelete
-    let pos = posDateInList(moment(suppression.date), result.map(item => item.date));
+    let pos = posDateInList(
+      moment(suppression.date),
+      result.map(item => item.date)
+    );
     // On supprime cet élément
     pos >= 0 && result.splice(pos, 1);
   });
+
+  // On inverse, c'est à dire que l'on prend l'ensemble des dates où il n'y a pas de réservation
+  if (inverse) {
+    result_inverse = [];
+    for (
+      let mydate = moment(constantes.annee, 8, 1);
+      mydate.diff(moment(constantes.annee + 1, 6, 1), "days") < 0;
+      mydate.add(1, "day")
+    ) {
+      result.find(item => mydate.diff(item.date, "days") === 0) === undefined &&
+        result_inverse.push({
+          date: mydate.locale("fr-FR")
+        });
+    }
+    result = result_inverse;
+  }
 
   // Tri final
   result = result.sort((a, b) => a.date.valueOf() - b.date.valueOf());
