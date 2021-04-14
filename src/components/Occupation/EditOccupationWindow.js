@@ -1,9 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Typography, Grid } from "@material-ui/core";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import PaperFieldOccupation from "./PaperFieldOccupation";
 import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
+import moment from "moment";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
@@ -98,9 +99,9 @@ export default function EditOccupation(props) {
 
         setError("loge", {
           type: "manual",
-          message: `Erreur : aucune modification n'a été apportée le ${shortcut.date.format(
-            "DD/MM/YYYY"
-          )}`
+          message: `Erreur : vous n'avez pas apporter de modification le ${moment(
+            shortcut.date
+          ).format("DD/MM/YYYY")}`
         });
         break;
 
@@ -116,7 +117,7 @@ export default function EditOccupation(props) {
           type: "manual",
           message: `Erreur : il existe déjà une réservation le ${
             shortcut.semaine
-          }e ${shortcut.jours}`
+          } ${shortcut.jours}`
         });
 
         break;
@@ -210,13 +211,13 @@ export default function EditOccupation(props) {
     errors
   } = useForm({});
 
+  const GridContainerProp = {};
+
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6">{texteEntete}</Typography>
-        {errors.loge && (
-          <Typography variant="subtitle1">{errors.loge.message}</Typography>
-        )}
+
         <ControllerSelect
           name="loge"
           label="Loge"
@@ -241,16 +242,33 @@ export default function EditOccupation(props) {
         )}
 
         <Typography variant="h6" />
-        <Button variant="contained" color="primary" type="submit">
-          Valider
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setClose(true)}
+        <Grid
+          direction="row"
+          justify="flex-end"
+          alignItems="center"
+          spacing={3}
+          container
         >
-          Annuler
-        </Button>
+          <Grid item>
+            {errors.loge && (
+              <Typography variant="subtitle1">{errors.loge.message}</Typography>
+            )}
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" type="submit">
+              Valider
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setClose(true)}
+            >
+              Annuler
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   );
