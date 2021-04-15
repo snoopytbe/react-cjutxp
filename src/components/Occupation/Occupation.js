@@ -117,7 +117,7 @@ export default function Occupation(props) {
 
       case "exceptionnel":
         setTypeEdit("add");
-        setLimit([])
+        setLimit(getListeDates(getValues(),true))
         setHighlight(listeDates);
         break;
 

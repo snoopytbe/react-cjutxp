@@ -99,7 +99,7 @@ export default function EditOccupation(props) {
 
         setError("loge", {
           type: "manual",
-          message: `Erreur : vous n'avez pas apporter de modification le ${moment(
+          message: `Erreur : vous n'avez pas apporté de modification le ${moment(
             shortcut.date
           ).format("DD/MM/YYYY")}`
         });

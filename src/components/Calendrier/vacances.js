@@ -5,7 +5,10 @@ export function nthDay(dt, day, number) {
   // dt : date
   // day : jour de la semaine
   // number : numero du jour = nieme
-  var firstDay = dt.clone().date(1).day(day);
+  var firstDay = dt
+    .clone()
+    .date(1)
+    .day(day);
   // Si firstDay est le mois précédent il faut décaler firstDay d'une semaine
   if (firstDay.isBefore(dt.startOf("month"))) firstDay.add(7, "days");
   var result = firstDay.clone().add((number - 1) * 7, "days");
@@ -15,7 +18,12 @@ export function nthDay(dt, day, number) {
 
 export function posDateInList(dt, liste) {
   return dt?.isValid()
-    ? liste.findIndex(item => dt.diff(item, "days") === 0)
+    ? liste.findIndex(
+        item =>
+          dt
+            .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            .diff(item, "days") === 0
+      )
     : -1;
 }
 

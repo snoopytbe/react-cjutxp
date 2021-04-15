@@ -118,15 +118,15 @@ export const getListeDates = (oneLogeBooking, inverse = false) => {
 
   // On inverse, c'est à dire que l'on prend l'ensemble des dates où il n'y a pas de réservation
   if (inverse) {
-    result_inverse = [];
+    let result_inverse = [];
     for (
-      let mydate = moment(constantes.annee, 8, 1);
-      mydate.diff(moment(constantes.annee + 1, 6, 1), "days") < 0;
+      let mydate = moment([constantes.annee, 8, 1]);
+      mydate.isBefore(moment([constantes.annee + 1, 6, 1]));
       mydate.add(1, "day")
     ) {
       result.find(item => mydate.diff(item.date, "days") === 0) === undefined &&
         result_inverse.push({
-          date: mydate.locale("fr-FR")
+          date: mydate.clone().locale("fr-FR")
         });
     }
     result = result_inverse;

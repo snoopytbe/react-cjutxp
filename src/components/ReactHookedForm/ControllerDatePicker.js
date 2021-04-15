@@ -32,7 +32,7 @@ export default function ControllerDatePicker(props) {
   }
 
   // Retourne true quand la date doit être désactivée dans le calendrier
-  function disableAllButHighlight(date) {
+  function isOutsideLimits(date) {
     let result = false;
     if (limit) {
       // si date fait partie des dates de "limit"
@@ -47,13 +47,30 @@ export default function ControllerDatePicker(props) {
     return result;
   }
 
+  function computeDefaultValue() {
+    var result = defaultValue;
+    if (defaultValue === "") {
+      for (
+        result = moment().set({
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0
+        });
+        isOutsideLimits(result);
+        result.add(1, "day")
+      );
+    }
+    return result;
+  }
+
   return (
     <MuiPickersUtilsProvider utils={LocalizedUtils} locale={frLocale}>
       <Controller
         {...other}
         name={name}
         control={control}
-        defaultValue={defaultValue === "" ? null : defaultValue} // utiliser la valeur null permet d'avoir le "empty label" du DatePicker
+        defaultValue={defaultValue === "" ? computeDefaultValue : defaultValue} // utiliser la valeur null permet d'avoir le "empty label" du DatePicker
         rules={{ required: { required } }}
         render={({ value, onChange }) => (
           <KeyboardDatePicker
@@ -70,7 +87,7 @@ export default function ControllerDatePicker(props) {
             }}
             okLabel="Valider"
             cancelLabel="Annuler"
-            shouldDisableDate={disableAllButHighlight}
+            shouldDisableDate={isOutsideLimits}
             renderDay={(day, selectedDate, isInCurrentMonth, dayComponent) => {
               // ne pas supprimer selectedDate !!!
               let isSelected =
