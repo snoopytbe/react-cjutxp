@@ -47,6 +47,8 @@ export default function ControllerDatePicker(props) {
     return result;
   }
 
+  // Calcule une valeur par default
+  // Il s'agit de la première date à partir d'aujourd'hui qui est possible (pas OutLimits)
   function computeDefaultValue() {
     var result = defaultValue;
     if (defaultValue === "") {
@@ -70,7 +72,7 @@ export default function ControllerDatePicker(props) {
         {...other}
         name={name}
         control={control}
-        defaultValue={defaultValue === "" ? computeDefaultValue : defaultValue} // utiliser la valeur null permet d'avoir le "empty label" du DatePicker
+        defaultValue={defaultValue === "" ? computeDefaultValue : defaultValue}
         rules={{ required: { required } }}
         render={({ value, onChange }) => (
           <KeyboardDatePicker

@@ -28,12 +28,16 @@ export default function EditOccupation(props) {
 
   var ListeLogesUtilisatrices =
     logesUtilisatrices?.map(loge => loge.loge) ?? [];
+
   var ListeLogesComplete = logeBooking?.map(loge => loge.loge) ?? [];
 
   switch (typeEdit) {
     case "delete":
       field = "suppression";
-      listeLoges = ListeLogesUtilisatrices;
+      listeLoges =
+        ListeLogesUtilisatrices.length > 0
+          ? ListeLogesUtilisatrices
+          : ListeLogesComplete;
       texteEntete = "Suppression de réservation";
       break;
 
@@ -211,8 +215,6 @@ export default function EditOccupation(props) {
     errors
   } = useForm({});
 
-  const GridContainerProp = {};
-
   return (
     <div style={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -227,8 +229,7 @@ export default function EditOccupation(props) {
           required
           onChangeHandler={changeHandler}
         />
-        {typeEdit !== "delete" && (
-          <>
+
             <PaperFieldOccupation
               field={field}
               oneLogeBooking={defaultValues}
@@ -238,8 +239,7 @@ export default function EditOccupation(props) {
               limit={limit}
               highlight={highlight}
             />
-          </>
-        )}
+
 
         <Typography variant="h6" />
         <Grid

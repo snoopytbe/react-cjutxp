@@ -51,7 +51,7 @@ function occupationReguliereToDate(occupation, mois) {
 }
 
 // Permet d'obtenir la liste de dates des tenues pour un field donné
-export function getListeDateFromField(oneLogeBooking, field, inverse = false) {
+export function getListeDateFromField(oneLogeBooking, field) {
   var liste = [];
   if (oneLogeBooking?.hasOwnProperty(field)) {
     oneLogeBooking[field].forEach(item => {

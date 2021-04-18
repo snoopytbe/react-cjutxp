@@ -10,9 +10,9 @@ import { renderCellExpand } from "./renderCellExpand";
 const theme = createMuiTheme(frFR);
 
 export default function TableauSynthese(props) {
-  //const [logeBooking, setlogeBooking] = useStateWithLocalStorage("logeBooking", initialValues);
+  const { logeBooking } = props;
+
   var history = useHistory();
-  const { logeBooking, setLogeBooking } = props;
 
   const columns = [
     {

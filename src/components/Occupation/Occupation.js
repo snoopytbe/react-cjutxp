@@ -3,64 +3,28 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
 import { getListeDates, getListeDateFromField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
-import PaperFieldOccupation from "./PaperFieldOccupation";
 import { useHistory } from "react-router-dom";
 import DialogAddOccupation from "./DialogAddOccupation";
-import { modeleFormulaire } from "../../data/constantes";
+import FieldComponent from "./FieldComponent";
 
 // Affiche le formulaire d'occupation de la loge "id"
 export default function Occupation(props) {
   const { logeBooking, setLogeBooking, id } = props;
+
   const [open, setOpen] = React.useState(false);
   const [typeEdit, setTypeEdit] = React.useState("");
   const [highlight, setHighlight] = React.useState([]);
   const [limit, setLimit] = React.useState([]);
 
-  // Création du formulaire initialisé avec les données de la loge
-  const { control, handleSubmit, register, getValues, reset } = useForm({
-    defaultValues: logeBooking[id]
-  });
-
-  const {
-    fields: regulierFields,
-    append: regulierAppend,
-    remove: regulierRemove
-  } = useFieldArray({
-    control,
-    name: "regulier"
-  });
-
-  const {
-    fields: modificationFields,
-    append: modificationAppend,
-    remove: modificationRemove
-  } = useFieldArray({
-    control,
-    name: "modification"
-  });
-
-  const {
-    fields: exceptionnelFields,
-    append: exceptionnelAppend,
-    remove: exceptionnelRemove
-  } = useFieldArray({
-    control,
-    name: "exceptionnel"
-  });
-
-  const {
-    fields: suppressionFields,
-    append: suppressionAppend,
-    remove: suppressionRemove
-  } = useFieldArray({
-    control,
-    name: "suppression"
-  });
-
   // Liste des dates avec une réservation
   const [listeDates, setListeDates] = React.useState(
     getListeDates(logeBooking[id])
   );
+
+  // Création du formulaire initialisé avec les données de la loge
+  const { control, handleSubmit, register, getValues, reset } = useForm({
+    defaultValues: logeBooking[id]
+  });
 
   const onChangeHandler = () => {
     // Mise à jour suite au changement
@@ -95,37 +59,57 @@ export default function Occupation(props) {
 
   var history = useHistory();
 
-  function commonProps(index) {
-    return {
-      bookingIndex: index,
-      control: control,
-      onChangeHandler: onChangeHandler
-    };
-  }
+  const fieldArrays = {
+    regulier: {
+      title: "Réservations régulières",
+      typeEdit: "add_regulier",
+      limit: [],
+      highlight: []
+    },
+    modification: {
+      title: "Modifications exceptionnelles",
+      typeEdit: "modify_regulier",
+      limit: getListeDateFromField(getValues(), "regulier"),
+      highlight: listeDates
+    },
+    exceptionnel: {
+      title: "Réservations exceptionnelles",
+      typeEdit: "add",
+      limit: getListeDates(getValues(), true),
+      highlight: listeDates
+    },
+    suppression: {
+      title: "Suppression exceptionnelle de réservation",
+      typeEdit: "delete",
+      limit: listeDates,
+      highlight: listeDates
+    }
+  };
+
+  Object.keys(fieldArrays)?.map(
+    field =>
+      ({
+        fields: fieldArrays[field].fields,
+        remove: fieldArrays[field].remove
+      } = useFieldArray({
+        control,
+        name: field
+      }))
+  );
 
   function onClickAdd(field) {
-    switch (field) {
-      case "regulier":
-        setTypeEdit("add_regulier");
-        break;
-
-      case "modification":
-        setTypeEdit("modify_regulier");
-        setLimit(getListeDateFromField(getValues(), "regulier"));
-        setHighlight(listeDates);
-        break;
-
-      case "exceptionnel":
-        setTypeEdit("add");
-        setLimit(getListeDates(getValues(),true))
-        setHighlight(listeDates);
-        break;
-
-      default:
-    }
-
+    setTypeEdit(fieldArrays[field].typeEdit);
+    setLimit(fieldArrays[field].limit);
+    setHighlight(fieldArrays[field].highlight);
     setOpen(true);
   }
+
+  const commonFieldComponentProps = {
+    fieldArrays: fieldArrays,
+    onChangeHandler: onChangeHandler,
+    onClickAdd: onClickAdd,
+    control: control
+  };
 
   return (
     <div style={{ flexGrow: 1 }}>
@@ -159,98 +143,12 @@ export default function Occupation(props) {
           inputRef={register}
         />
 
-        <Typography variant="h6">Réservations régulières</Typography>
-
-        {regulierFields.map((item, index) => {
+        {Object.keys(fieldArrays)?.map(field => {
           return (
-            <React.Fragment key={item.id}>
-              <PaperFieldOccupation
-                field="regulier"
-                oneLogeBooking={regulierFields}
-                removeHandler={regulierRemove}
-                {...commonProps(index)}
-              />
-            </React.Fragment>
+            <FieldComponent {...commonFieldComponentProps} field={field} />
           );
         })}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onClickAdd("regulier")}
-        >
-          Ajouter
-        </Button>
 
-        <Typography variant="h6">Modifications exceptionnelles</Typography>
-
-        {modificationFields.map((item, index) => {
-          return (
-            <React.Fragment key={item.id}>
-              <PaperFieldOccupation
-                field="modification"
-                oneLogeBooking={modificationFields}
-                removeHandler={modificationRemove}
-                limit={getListeDateFromField(getValues(), "regulier")}
-                highlight={listeDates}
-                {...commonProps(index)}
-              />
-            </React.Fragment>
-          );
-        })}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onClickAdd("modification")}
-        >
-          Ajouter
-        </Button>
-
-        <Typography variant="h6">Réservations exceptionnelles</Typography>
-
-        {exceptionnelFields.map((item, index) => {
-          return (
-            <React.Fragment key={item.id}>
-              <PaperFieldOccupation
-                field="exceptionnel"
-                oneLogeBooking={exceptionnelFields}
-                removeHandler={exceptionnelRemove}
-                highlight={listeDates}
-                {...commonProps(index)}
-              />
-            </React.Fragment>
-          );
-        })}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onClickAdd("exceptionnel")}
-        >
-          Ajouter
-        </Button>
-
-        <Typography variant="h6">
-          Suppression exceptionnelle de réservation
-        </Typography>
-
-        {suppressionFields.map((item, index) => {
-          return (
-            <React.Fragment key={item.id}>
-              <PaperFieldOccupation
-                index={index}
-                field="suppression"
-                oneLogeBooking={suppressionFields}
-                removeHandler={suppressionRemove}
-                limit={listeDates}
-                highlight={listeDates}
-                {...commonProps(index)}
-              />
-            </React.Fragment>
-          );
-        })}
-        <Typography variant="h6" />
-        <Button variant="contained" color="primary" type="submit">
-          Valider
-        </Button>
         <Typography variant="h6" />
         {calendrierMemoized}
       </form>

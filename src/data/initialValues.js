@@ -34,11 +34,7 @@ export const initialValuesComplete = [
       }
     ],
     modification: [],
-    suppression: [
-      {
-        date: ""
-      }
-    ]
+    suppression: []
   },
   {
     acronyme: "TWO",
@@ -67,11 +63,8 @@ export const initialValuesComplete = [
         heure: "20h00"
       }
     ],
-    suppression: [
-      {
-        date: ""
-      }
-    ]
+    suppression: [],
+    modification: []
   },
   {
     acronyme: "THR",
@@ -100,10 +93,7 @@ export const initialValuesComplete = [
         heure: "20h30"
       }
     ],
-    suppression: [
-      {
-        date: ""
-      }
-    ]
+    suppression: [],
+    modification: []
   }
 ];

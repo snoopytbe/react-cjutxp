@@ -1,7 +1,7 @@
-Revoir la taille de la police de caractères
+Revoir la taille de la mise en forme
 Calendrier plus détaillé = code couleur pour les différents types de réservation
 Export PDF
-Sauvegarde sur un serveur / SQL ?
+Sauvegarde sur un serveur / SQL ? API ?
 KeyboardTimePicker pour le choix de l'heure
 refactoring
 Ajout des autres informations de la loge
@@ -25,6 +25,7 @@ Ajouter un menu pour accéder aux différents écrans
 Ajout de la modification des réservations via le calendrier
 Interdire le dimanche en format récurrent, neutraliser la période de Noël
 Vérification des champs saisis : pas de date en doublon, pas d'ajout ou suppression invalide
+
 
 Brainstorming
 "récurrente" : Réservations récurrentes 

@@ -11,14 +11,11 @@ function ControllerSwitch(props) {
   const { type, ...controllerProperties } = props;
 
   switch (type) {
-    case "Select":
-      return <ControllerSelect {...controllerProperties} />;
-      break;
     case "DatePicker":
       return <ControllerDatePicker {...controllerProperties} />;
-      break;
+    case "Select":
     default:
-      "";
+      return <ControllerSelect {...controllerProperties} />;
   }
 }
 
