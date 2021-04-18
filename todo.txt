@@ -1,4 +1,6 @@
-Revoir la taille de la mise en forme
+Sauvegarde des suppressions qui plante
+poubelle qui apparait sur les fenetres d'ajout
+Revoir la mise en forme
 Calendrier plus détaillé = code couleur pour les différents types de réservation
 Export PDF
 Sauvegarde sur un serveur / SQL ? API ?
