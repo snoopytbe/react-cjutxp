@@ -85,14 +85,14 @@ const caracteristiqueChamps = {
 
 // Definition de la structure du formulaire
 export const modeleFormulaire = {
-  regulier: [
+  reccurent: [
     { ...caracteristiqueChamps["semaine"], xs: 4, sm: 2 },
     { ...caracteristiqueChamps["jour"], xs: 4, sm: 2 },
     { ...caracteristiqueChamps["temple"], xs: 4, sm: 2 },
     { ...caracteristiqueChamps["sallehumide"], xs: 4, sm: 2 },
     { ...caracteristiqueChamps["heure"], xs: 4, sm: 3 }
   ],
-  modification: [
+  modify_reccurent: [
     { ...caracteristiqueChamps["datePicker"], xs: 6, sm: 3 },
     { ...caracteristiqueChamps["temple"], xs: 6, sm: 2 },
     { ...caracteristiqueChamps["sallehumide"], xs: 6, sm: 3 },

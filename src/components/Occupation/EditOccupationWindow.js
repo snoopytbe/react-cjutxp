@@ -32,23 +32,14 @@ export default function EditOccupation(props) {
   var ListeLogesComplete = logeBooking?.map(loge => loge.loge) ?? [];
 
   switch (typeEdit) {
-    case "delete":
-      field = "suppression";
-      listeLoges =
-        ListeLogesUtilisatrices.length > 0
-          ? ListeLogesUtilisatrices
-          : ListeLogesComplete;
-      texteEntete = "Suppression de réservation";
-      break;
-
-    case "add_regulier":
-      field = "regulier";
+    case "reccurent":
+      field = "reccurent";
       listeLoges = ListeLogesComplete;
-      texteEntete = "Ajout de réservation";
+      texteEntete = "Ajout de réservation récurrente";
       break;
 
-    case "modify_regulier":
-      field = "modification";
+    case "modify_reccurent":
+      field = "modify_reccurent";
       listeLoges =
         ListeLogesUtilisatrices.length > 0
           ? ListeLogesUtilisatrices
@@ -56,13 +47,7 @@ export default function EditOccupation(props) {
       texteEntete = "Modification d'une réservation récurrente";
       break;
 
-    case "modify":
-      field = "exceptionnel";
-      listeLoges = ListeLogesUtilisatrices;
-      texteEntete = "Modification de réservation";
-      break;
-
-    case "add":
+    case "ajout":
       field = "exceptionnel";
       // on ne met dans listeLoges que les loges qui ne font pas partie des logesUtilisatrices
       logeBooking?.forEach(
@@ -71,6 +56,21 @@ export default function EditOccupation(props) {
             -1 && listeLoges.push(loge.loge)
       ) ?? [];
       texteEntete = "Ajout de réservation";
+      break;
+
+    case "modification":
+      field = "exceptionnel";
+      listeLoges = ListeLogesUtilisatrices;
+      texteEntete = "Modification de réservation";
+      break;
+
+    case "suppressionn":
+      field = "suppression";
+      listeLoges =
+        ListeLogesUtilisatrices.length > 0
+          ? ListeLogesUtilisatrices
+          : ListeLogesComplete;
+      texteEntete = "Suppression de réservation";
       break;
 
     default:
@@ -89,7 +89,7 @@ export default function EditOccupation(props) {
     var isError = false;
     switch (field) {
       case "exceptionnel":
-      case "modification":
+      case "modify_reccurent":
         let occupation = getOccupationLogeDate(
           logeBooking,
           update.loge,
@@ -109,7 +109,7 @@ export default function EditOccupation(props) {
         });
         break;
 
-      case "regulier":
+      case "reccurent":
         // On recherche les réservations de la loge
         let foundLogeBooking = logeBooking[idModified][field].find(
           item =>
@@ -131,6 +131,9 @@ export default function EditOccupation(props) {
 
     // On ajoute les nouvelles données
     if (!isError) {
+      newLogeBooking[idModified][field] =
+        newLogeBooking[idModified][field] || [];
+
       switch (field) {
         case "suppression":
           newLogeBooking[idModified][field].push({
@@ -138,7 +141,7 @@ export default function EditOccupation(props) {
           });
           break;
 
-        case "regulier":
+        case "reccurent":
           newLogeBooking[idModified][field].push({
             jours: shortcut.jours,
             semaine: shortcut.semaine,
@@ -149,10 +152,8 @@ export default function EditOccupation(props) {
           break;
 
         case "exceptionnel":
-        case "modification":
+        case "modify_reccurent":
         default:
-          newLogeBooking[idModified][field] =
-            newLogeBooking[idModified][field] || [];
           newLogeBooking[idModified][field].push({
             date: shortcut.date,
             temple: shortcut.temple,
@@ -230,16 +231,15 @@ export default function EditOccupation(props) {
           onChangeHandler={changeHandler}
         />
 
-            <PaperFieldOccupation
-              field={field}
-              oneLogeBooking={defaultValues}
-              bookingIndex={0}
-              control={control}
-              onChangeHandler={changeHandler}
-              limit={limit}
-              highlight={highlight}
-            />
-
+        <PaperFieldOccupation
+          field={field}
+          oneLogeBooking={defaultValues}
+          bookingIndex={0}
+          control={control}
+          onChangeHandler={changeHandler}
+          limit={limit}
+          highlight={highlight}
+        />
 
         <Typography variant="h6" />
         <Grid

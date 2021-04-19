@@ -42,7 +42,7 @@ function convertDateToElement(occupation, FctOccupationToDate) {
 }
 
 // Fonction de conversion d'une occupation régulière en date au format moment
-function occupationReguliereToDate(occupation, mois) {
+function occupationReccurenteToDate(occupation, mois) {
   return nthDay(
     moment([constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1]),
     giveDayNumber(occupation?.jours),
@@ -58,17 +58,17 @@ export function getListeDateFromField(oneLogeBooking, field) {
       // si item["temple"] est vide on n'ajoute pas la date
       if (item["temple"] || field === "suppression") {
         switch (field) {
-          case "regulier":
+          case "reccurent":
             constantes.mois.forEach(mois => {
               liste = liste.concat(
                 convertDateToElement(item, () =>
-                  occupationReguliereToDate(item, mois.numero)
+                  occupationReccurenteToDate(item, mois.numero)
                 )
               );
             });
             break;
 
-          case "modification":
+          case "modify_reccurent":
           case "exceptionnel":
             liste = convertDateToElement(item, date => moment(date));
             break;
@@ -92,7 +92,7 @@ export const getListeDates = (oneLogeBooking, inverse = false) => {
   var result = [];
 
   // On récupère les dates de réservations régulières et exceptionnelles
-  result = getListeDateFromField(oneLogeBooking, "regulier").concat(
+  result = getListeDateFromField(oneLogeBooking, "reccurent").concat(
     getListeDateFromField(oneLogeBooking, "exceptionnel")
   );
 
@@ -152,12 +152,12 @@ export const texteReservations = oneLogeBooking => {
     })`;
   }
 
-  if (oneLogeBooking?.hasOwnProperty("regulier")) {
+  if (oneLogeBooking?.hasOwnProperty("reccurent")) {
     var resultObject = {};
 
     // Le texte indiquant les numéros de semaine est généré ici. Les réservations partageant le même index
     // sont factorisées
-    oneLogeBooking.regulier.forEach(item => {
+    oneLogeBooking.reccurent.forEach(item => {
       //Si l'item n'est pas vide
       if (item.temple) {
         let before = "";
@@ -192,7 +192,7 @@ export const texteReservations = oneLogeBooking => {
     }
   }
 
-  texteModif("modification", "Modifications de réservations");
+  texteModif("modify_reccurent", "Modifications de réservations");
   texteModif("exceptionnel", "Réservations exceptionnelles");
   texteModif("suppression", "Annulations exceptionnelles");
 
@@ -231,12 +231,12 @@ export function isEmptyLastField(
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const checkLastField = (
   oneLogeBooking,
-  regulierAppend,
+  reccurentAppend,
   exceptionnelAppend,
   suppressionAppend
 ) => {
-  if (!isEmptyLastField(oneLogeBooking, "regulier"))
-    regulierAppend({
+  if (!isEmptyLastField(oneLogeBooking, "reccurent"))
+    reccurentAppend({
       semaine: "",
       jours: "",
       temple: "",

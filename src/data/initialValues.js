@@ -2,7 +2,7 @@ export const initialValuesComplete = [
   {
     acronyme: "ONE",
     loge: "Test 1",
-    regulier: [
+    reccurent: [
       {
         semaine: "1er",
         jours: "mardi",
@@ -33,13 +33,13 @@ export const initialValuesComplete = [
         heure: "20h30"
       }
     ],
-    modification: [],
+    modify_reccurent: [],
     suppression: []
   },
   {
     acronyme: "TWO",
     loge: "Test 2",
-    regulier: [
+    reccurent: [
       {
         semaine: "1er",
         jours: "mercredi",
@@ -64,12 +64,12 @@ export const initialValuesComplete = [
       }
     ],
     suppression: [],
-    modification: []
+    modify_reccurent: []
   },
   {
     acronyme: "THR",
     loge: "Test 3",
-    regulier: [
+    reccurent: [
       {
         semaine: "1er",
         jours: "mardi",
@@ -94,6 +94,6 @@ export const initialValuesComplete = [
       }
     ],
     suppression: [],
-    modification: []
+    modify_reccurent: []
   }
 ];

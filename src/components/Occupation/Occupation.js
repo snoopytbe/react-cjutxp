@@ -60,27 +60,27 @@ export default function Occupation(props) {
   var history = useHistory();
 
   const fieldArrays = {
-    regulier: {
+    reccurent: {
       title: "Réservations régulières",
-      typeEdit: "add_regulier",
+      typeEdit: "reccurent",
       limit: [],
       highlight: []
     },
-    modification: {
+    modify_reccurent: {
       title: "Modifications exceptionnelles",
-      typeEdit: "modify_regulier",
-      limit: getListeDateFromField(getValues(), "regulier"),
+      typeEdit: "modify_reccurent",
+      limit: getListeDateFromField(getValues(), "reccurent"),
       highlight: listeDates
     },
     exceptionnel: {
       title: "Réservations exceptionnelles",
-      typeEdit: "add",
+      typeEdit: "ajout",
       limit: getListeDates(getValues(), true),
       highlight: listeDates
     },
     suppression: {
       title: "Suppression exceptionnelle de réservation",
-      typeEdit: "delete",
+      typeEdit: "suppression",
       limit: listeDates,
       highlight: listeDates
     }

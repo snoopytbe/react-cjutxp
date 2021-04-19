@@ -41,17 +41,17 @@ export default function Calendrier(props) {
   };
 
   const handleAdd = () => {
-    setTypeEdit("add");
+    setTypeEdit("ajout");
     setOpen(true);
   };
 
   const handleModify = () => {
-    setTypeEdit("modify");
+    setTypeEdit("modification");
     setOpen(true);
   };
 
   const handleDelete = () => {
-    setTypeEdit("delete");
+    setTypeEdit("suppression");
     setOpen(true);
   };
 
