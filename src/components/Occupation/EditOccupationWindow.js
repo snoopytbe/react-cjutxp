@@ -64,7 +64,7 @@ export default function EditOccupation(props) {
       texteEntete = "Modification de réservation";
       break;
 
-    case "suppressionn":
+    case "suppression":
       field = "suppression";
       listeLoges =
         ListeLogesUtilisatrices.length > 0
