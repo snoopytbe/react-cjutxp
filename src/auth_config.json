@@ -1,0 +1,6 @@
+{
+    "domain": "snoopytbe.eu.auth0.com",
+    "clientId": "5tdQgQeHNJUoYjhIuIHBZjuP8pYkahJU",
+    "appOrigin": "http://localhost:3000",
+    "apiOrigin": "http://localhost:3001"
+  }

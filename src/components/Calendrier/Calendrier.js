@@ -20,13 +20,13 @@ export default function Calendrier(props) {
   const [lignes, setLignes] = React.useState([]);
   const [mousePos, setMousePos] = React.useState({
     mouseX: null,
-    mouseY: null
+    mouseY: null,
   });
   const [activeMenu, setActiveMenu] = React.useState({
     general: false,
     add: false,
     del: false,
-    modify: false
+    modify: false,
   });
   const [contextData, setContextData] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -55,16 +55,15 @@ export default function Calendrier(props) {
     setOpen(true);
   };
 
-  const datesLogeBooking = logeBooking.map(item => getListeDates(item));
+  const datesLogeBooking = logeBooking.map((item) => getListeDates(item));
 
   function estSansReservation(myDate) {
     let result = false;
     // Les dimanches sont sans réservation
     if (myDate.day() === 0) return result;
     // On regarde ensuite les périodes interdites
-    periodesInterdites.forEach(per => {
-      if (myDate.isSameOrAfter(per.debut) && myDate.isSameOrBefore(per.fin))
-        result = true;
+    periodesInterdites.forEach((per) => {
+      if (myDate.isSameOrAfter(per.debut) && myDate.isSameOrBefore(per.fin)) result = true;
     });
     return result;
   }
@@ -78,8 +77,10 @@ export default function Calendrier(props) {
     logeBooking?.forEach(
       (loge, index) =>
         // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
-        dateInList(myDate, datesLogeBooking[index].map(item => item.date)) &&
-        result.push({ acronyme: loge.acronyme, loge: loge.loge })
+        dateInList(
+          myDate,
+          datesLogeBooking[index].map((item) => item.date)
+        ) && result.push({ acronyme: loge.acronyme, loge: loge.loge })
     );
     return result;
   }
@@ -88,24 +89,17 @@ export default function Calendrier(props) {
     event.preventDefault();
     setMousePos({
       mouseX: event.clientX - 2,
-      mouseY: event.clientY - 4
+      mouseY: event.clientY - 4,
     });
     setActiveMenu({
       general: true,
-      add: estSansReservation(myDate)
-        ? false
-        : (logeBooking?.length ?? 0) >
-          (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
-      modify: estSansReservation(myDate)
-        ? false
-        : listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
-      del: estSansReservation(myDate)
-        ? false
-        : listeLogesUtilisatricesDate(myDate).length ?? null >= 0 // on peut effacer s'il y a au moins un loge utilisatrice ce jour
+      add: estSansReservation(myDate) ? false : (logeBooking?.length ?? 0) > (listeLogesUtilisatricesDate(myDate).length ?? 0), // on peut ajouter si il y a plus de loges au total que de loges utilisatrices du jour
+      modify: estSansReservation(myDate) ? false : listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut modifier s'il y a au moins un loge utilisatrice ce jour
+      del: estSansReservation(myDate) ? false : listeLogesUtilisatricesDate(myDate).length ?? null >= 0, // on peut effacer s'il y a au moins un loge utilisatrice ce jour
     });
     setContextData({
       date: myDate,
-      logesUtilisatrices: listeLogesUtilisatricesDate(myDate)
+      logesUtilisatrices: listeLogesUtilisatricesDate(myDate),
     });
   }
 
@@ -120,51 +114,26 @@ export default function Calendrier(props) {
     const result = [];
 
     function classDescription(jour) {
-      return jour.isValid()
-        ? estFerie(jour)
-          ? "ferie"
-          : jour.day() === 0
-          ? "dimanche"
-          : "jour"
-        : "noDate";
+      return jour.isValid() ? (estFerie(jour) ? "ferie" : jour.day() === 0 ? "dimanche" : "jour") : "noDate";
     }
 
     for (let i = 0; i < 11; i++) {
-      let myDate = moment([
-        i < 4 ? annee : annee + 1,
-        i < 4 ? i + 8 : i - 4,
-        index + 1
-      ]);
+      let myDate = moment([i < 4 ? annee : annee + 1, i < 4 ? i + 8 : i - 4, index + 1]);
       myDate.locale("fr-FR");
       let isValidDate = myDate.isValid();
       let className = classDescription(myDate);
       result.push(
         // Numéro du jour
         <React.Fragment key={"colonne" + index + "i" + i}>
-          <TableCell className={className}>
-            {isValidDate && myDate.format("DD")}
-          </TableCell>
+          <TableCell className={className}>{isValidDate && myDate.format("DD")}</TableCell>
           {/* Initiale du jour */}
-          <TableCell className={className}>
-            {isValidDate && myDate.format("dd")[0].toUpperCase()}
-          </TableCell>
+          <TableCell className={className}>{isValidDate && myDate.format("dd")[0].toUpperCase()}</TableCell>
           {/* Occupation du temple */}
-          <TableCell
-            className={"description " + className}
-            onContextMenu={event => handleDescrClick(event, myDate)}
-          >
+          <TableCell className={"description " + className} onContextMenu={(event) => handleDescrClick(event, myDate)}>
             {isValidDate && txtCelluleOccupation(myDate)}
           </TableCell>
           {/* Vacances scolaires */}
-          <TableCell
-            className={
-              isValidDate
-                ? estVacances(myDate, zone)
-                  ? "vacances"
-                  : className + " bordvacances"
-                : "noDate"
-            }
-          />
+          <TableCell className={isValidDate ? (estVacances(myDate, zone) ? "vacances" : className + " bordvacances") : "noDate"} />
         </React.Fragment>
       );
     }
@@ -174,11 +143,7 @@ export default function Calendrier(props) {
   React.useEffect(() => {
     let newLigne = [];
 
-    for (let i = 0; i < 31; i++)
-      newLigne = [
-        ...newLigne,
-        <TableRow key={"colonne" + i}>{colonnes(i)}</TableRow>
-      ];
+    for (let i = 0; i < 31; i++) newLigne = [...newLigne, <TableRow key={"colonne" + i}>{colonnes(i)}</TableRow>];
 
     setLignes(newLigne);
   }, [logeBooking]);
@@ -197,7 +162,7 @@ export default function Calendrier(props) {
               </TableCell>
             </TableRow>
             <TableRow>
-              {mois.map(item => (
+              {mois.map((item) => (
                 <React.Fragment key={item.nom}>
                   <TableCell className="mois" colSpan={4}>
                     {item.nom}
@@ -214,11 +179,7 @@ export default function Calendrier(props) {
         open={activeMenu.general}
         onClose={handleDescrClose}
         anchorReference="anchorPosition"
-        anchorPosition={
-          mousePos.mouseY !== null && mousePos.mouseX !== null
-            ? { top: mousePos.mouseY, left: mousePos.mouseX }
-            : undefined
-        }
+        anchorPosition={mousePos.mouseY !== null && mousePos.mouseX !== null ? { top: mousePos.mouseY, left: mousePos.mouseX } : undefined}
       >
         <MenuItem disabled={!activeMenu.add} onClick={handleAdd}>
           Ajouter

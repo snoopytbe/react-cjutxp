@@ -8,33 +8,33 @@ export const initialValuesComplete = [
         jours: "mardi",
         temple: "Berteaux (ETG)",
         sallehumide: "Les 2 salles humides",
-        heure: "20h30"
+        heure: "20h30",
       },
       {
         semaine: "3ème",
         jours: "vendredi",
         temple: "Berteaux (ETG)",
         sallehumide: "Les 2 salles humides",
-        heure: "20h30"
+        heure: "20h30",
       },
       {
         semaine: "5ème",
         jours: "vendredi",
         temple: "Berteaux (ETG)",
         sallehumide: "Salle humide Jardin",
-        heure: "20h30"
-      }
+        heure: "20h30",
+      },
     ],
     exceptionnel: [
       {
         date: "2021-02-23T00:00:00.000Z",
         temple: "Berteaux (ETG)",
         sallehumide: "Salle humide Jardin",
-        heure: "20h30"
-      }
+        heure: "20h30",
+      },
     ],
     modify_reccurent: [],
-    suppression: []
+    suppression: [],
   },
   {
     acronyme: "TWO",
@@ -45,26 +45,26 @@ export const initialValuesComplete = [
         jours: "mercredi",
         temple: "Ramsay (RDC)",
         sallehumide: "Salle humide Cuisine",
-        heure: "20h00"
+        heure: "20h00",
       },
       {
         semaine: "3ème",
         jours: "mercredi",
         temple: "Ramsay (RDC)",
         sallehumide: "Salle humide Cuisine",
-        heure: "20h00"
-      }
+        heure: "20h00",
+      },
     ],
     exceptionnel: [
       {
         date: "2021-07-07T00:00:00.000Z",
         temple: "Ramsay (RDC)",
         sallehumide: "Les 2 salles humides",
-        heure: "20h00"
-      }
+        heure: "20h00",
+      },
     ],
     suppression: [],
-    modify_reccurent: []
+    modify_reccurent: [],
   },
   {
     acronyme: "THR",
@@ -75,25 +75,25 @@ export const initialValuesComplete = [
         jours: "mardi",
         temple: "Ramsay (RDC)",
         sallehumide: "Salle humide Jardin",
-        heure: "20h30"
+        heure: "20h30",
       },
       {
         semaine: "2ème",
         jours: "vendredi",
         temple: "Berteaux (ETG)",
         sallehumide: "Les 2 salles humides",
-        heure: "20h30"
-      }
+        heure: "20h30",
+      },
     ],
     exceptionnel: [
       {
         date: "2021-02-23T00:00:00.000Z",
         temple: "Berteaux (ETG)",
         sallehumide: "Salle humide Jardin",
-        heure: "20h30"
-      }
+        heure: "20h30",
+      },
     ],
     suppression: [],
-    modify_reccurent: []
-  }
+    modify_reccurent: [],
+  },
 ];
