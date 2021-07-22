@@ -7,77 +7,69 @@ import { nthDay, posDateInList } from "../Calendrier/vacances";
 // Retourne l'id d'une loge
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const getIdLoge = (logeBooking, loge) => {
-  return logeBooking?.findIndex(item => item.loge === loge);
+  return logeBooking?.findIndex((item) => item.loge === loge);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la réservation d'un loge pour une date donnée
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const getOccupationLogeDate = (logeBooking, loge, date) => {
+export const getLogeBookingDate = (logeBooking, loge, date) => {
   // On recherche les réservations de la loge
-  let foundLogeBooking = logeBooking.find(item => item.loge === loge);
+  let foundLogeBooking = logeBooking.find((item) => item.loge === loge);
   // Les dates de réservation de la loge
-  let listeDates = getListeDates(foundLogeBooking);
+  let listeDates = getListeReservationWithDate(foundLogeBooking);
   // On recherche la position de la date recherchée dans la liste des dates
-  let index = posDateInList(moment(date), listeDates.map(item => item.date));
+  let index = posDateInList(
+    moment(date),
+    listeDates.map((item) => item.date)
+  );
   // Puis on donne la reservation correspondante
   return listeDates[index]?.reservation ?? null;
 };
 
 function giveDayNumber(dayToFind) {
-  return constantes.jours.find(value => dayToFind === value.nom)?.numero;
+  return constantes.jours.find((value) => dayToFind === value.nom)?.numero;
 }
 
-// Permet de convertir une occupation en un élément de la liste de dates
-// utilise une fonction de conversion d'une occupation en date au format moment
-function convertDateToElement(occupation, FctOccupationToDate) {
+// Permet de convertir une occupation pour une date donnée en un élément contenant la date et la reservation
+function createReservationWithDate(occupation, DateConvertFct) {
   var element = [];
-  var maDate = FctOccupationToDate(occupation.date);
+  var maDate = DateConvertFct(occupation.date);
   if (maDate.isValid())
     element.push({
       date: maDate.locale("fr-FR"),
-      reservation: occupation
+      reservation: occupation,
     });
   return element;
 }
 
-// Fonction de conversion d'une occupation régulière en date au format moment
-function occupationReccurenteToDate(occupation, mois) {
-  return nthDay(
-    moment([constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1]),
-    giveDayNumber(occupation?.jours),
-    occupation?.semaine[0]
-  );
+// Fonction de conversion d'une occupation récurrente en date au format moment
+function reccurentLogeBookingToDate(occupation, mois) {
+  return nthDay(moment([constantes.annee + (mois < 9 ? 1 : 0), mois - 1, 1]), giveDayNumber(occupation?.jours), occupation?.semaine[0]);
 }
 
 // Permet d'obtenir la liste de dates des tenues pour un field donné
-export function getListeDateFromField(oneLogeBooking, field) {
+export function getListeReservationWithDateFromField(oneLogeBooking, field) {
   var liste = [];
   if (oneLogeBooking?.hasOwnProperty(field)) {
-    oneLogeBooking[field].forEach(item => {
+    oneLogeBooking[field].forEach((item) => {
       // si item["temple"] est vide on n'ajoute pas la date
       if (item["temple"] || field === "suppression") {
         switch (field) {
           case "reccurent":
-            constantes.mois.forEach(mois => {
-              liste = liste.concat(
-                convertDateToElement(item, () =>
-                  occupationReccurenteToDate(item, mois.numero)
-                )
-              );
+            constantes.mois.forEach((mois) => {
+              liste = liste.concat(createReservationWithDate(item, () => reccurentLogeBookingToDate(item, mois.numero)));
             });
             break;
 
           case "modify_reccurent":
           case "exceptionnel":
-            liste = convertDateToElement(item, date => moment(date));
+            liste = createReservationWithDate(item, (date) => moment(date));
             break;
 
           case "suppression":
           default:
-            liste = convertDateToElement(item, date =>
-              moment(date, moment.ISO_8601)
-            );
+            liste = createReservationWithDate(item, (date) => moment(date, moment.ISO_8601));
         }
       }
     });
@@ -88,29 +80,26 @@ export function getListeDateFromField(oneLogeBooking, field) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Retourne la liste des dates des tenues à partir des données de réservation des loges
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const getListeDates = (oneLogeBooking, inverse = false) => {
+export const getListeReservationWithDate = (oneLogeBooking, inverse = false) => {
   var result = [];
 
   // On récupère les dates de réservations régulières et exceptionnelles
-  result = getListeDateFromField(oneLogeBooking, "reccurent").concat(
-    getListeDateFromField(oneLogeBooking, "exceptionnel")
+  result = getListeReservationWithDateFromField(oneLogeBooking, "reccurent").concat(
+    getListeReservationWithDateFromField(oneLogeBooking, "exceptionnel")
   );
 
   // On supprime les éventuels doublons
-  result = result.reduce(
-    (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
-    []
-  );
+  result = result.reduce((unique, item) => (unique.includes(item) ? unique : [...unique, item]), []);
 
   // On liste les dates supprimées
-  let dateSupprimees = getListeDateFromField(oneLogeBooking, "suppression");
+  let dateSupprimees = getListeReservationWithDateFromField(oneLogeBooking, "suppression");
 
   // On enlève les dates supprimées
-  dateSupprimees.forEach(suppression => {
+  dateSupprimees.forEach((suppression) => {
     // On cherche la position de maDate dans resultWithDelete
     let pos = posDateInList(
       moment(suppression.date),
-      result.map(item => item.date)
+      result.map((item) => item.date)
     );
     // On supprime cet élément
     pos >= 0 && result.splice(pos, 1);
@@ -119,14 +108,10 @@ export const getListeDates = (oneLogeBooking, inverse = false) => {
   // On inverse, c'est à dire que l'on prend l'ensemble des dates où il n'y a pas de réservation
   if (inverse) {
     let result_inverse = [];
-    for (
-      let mydate = moment([constantes.annee, 8, 1]);
-      mydate.isBefore(moment([constantes.annee + 1, 6, 1]));
-      mydate.add(1, "day")
-    ) {
-      result.find(item => mydate.diff(item.date, "days") === 0) === undefined &&
+    for (let mydate = moment([constantes.annee, 8, 1]); mydate.isBefore(moment([constantes.annee + 1, 6, 1])); mydate.add(1, "day")) {
+      result.find((item) => mydate.diff(item.date, "days") === 0) === undefined &&
         result_inverse.push({
-          date: mydate.clone().locale("fr-FR")
+          date: mydate.clone().locale("fr-FR"),
         });
     }
     result = result_inverse;
@@ -141,15 +126,13 @@ export const getListeDates = (oneLogeBooking, inverse = false) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Permet d'obtenir un texte de description des réservations à partir des données de réservation des loges
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const texteReservations = oneLogeBooking => {
+export const texteReservations = (oneLogeBooking) => {
   var result = "";
 
   // Texte à afficher pour chaque jour, heure, temple et sallehumide
   // Permet également de générer un index par jour, heure, temple et sallehumide
   function indexGenerator(item) {
-    return `${item.jours ?? ""} (${item.heure}, ${item.temple}, ${
-      item.sallehumide
-    })`;
+    return `${item.jours ?? ""} (${item.heure}, ${item.temple}, ${item.sallehumide})`;
   }
 
   if (oneLogeBooking?.hasOwnProperty("reccurent")) {
@@ -157,20 +140,19 @@ export const texteReservations = oneLogeBooking => {
 
     // Le texte indiquant les numéros de semaine est généré ici. Les réservations partageant le même index
     // sont factorisées
-    oneLogeBooking.reccurent.forEach(item => {
+    oneLogeBooking.reccurent.forEach((item) => {
       //Si l'item n'est pas vide
       if (item.temple) {
         let before = "";
         if (resultObject[indexGenerator(item)]) {
-          before =
-            resultObject[indexGenerator(item)].replace(" et", ",") + " et ";
+          before = resultObject[indexGenerator(item)].replace(" et", ",") + " et ";
         }
         resultObject[indexGenerator(item)] = before + item.semaine;
       }
     });
 
     // Texte final de réservation
-    Object.keys(resultObject).forEach(key => {
+    Object.keys(resultObject).forEach((key) => {
       let before = "";
       if (result !== "") before = result + ", ";
       result = before + resultObject[key] + " " + key;
@@ -183,10 +165,7 @@ export const texteReservations = oneLogeBooking => {
         if (item.temple) {
           if (index === 0) result += `\n${title} :\n`;
           if (index > 0) result += ", ";
-          result +=
-            moment(item.date)
-              .locale("fr-FR")
-              .format("DD/MM/YYYY") + indexGenerator(item);
+          result += moment(item.date).locale("fr-FR").format("DD/MM/YYYY") + indexGenerator(item);
         }
       });
     }
@@ -203,12 +182,7 @@ export const texteReservations = oneLogeBooking => {
 // Cette fonction permet de regarder si le dernier champs est vide
 // retourne un booléen
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export function isEmptyLastField(
-  oneLogeBooking,
-  fieldName,
-  exception = "",
-  nullValue = ""
-) {
+export function isEmptyLastField(oneLogeBooking, fieldName, exception = "", nullValue = "") {
   var result = false;
 
   if (oneLogeBooking.hasOwnProperty(fieldName)) {
@@ -229,24 +203,17 @@ export function isEmptyLastField(
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cette fonction permet d'assurer que le formulaire comporte toujours une dernière entrée vide
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export const checkLastField = (
-  oneLogeBooking,
-  reccurentAppend,
-  exceptionnelAppend,
-  suppressionAppend
-) => {
+export const checkLastField = (oneLogeBooking, reccurentAppend, exceptionnelAppend, suppressionAppend) => {
   if (!isEmptyLastField(oneLogeBooking, "reccurent"))
     reccurentAppend({
       semaine: "",
       jours: "",
       temple: "",
       sallehumide: "",
-      heure: ""
+      heure: "",
     });
 
-  if (!isEmptyLastField(oneLogeBooking, "exceptionnel", "date"))
-    exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
+  if (!isEmptyLastField(oneLogeBooking, "exceptionnel", "date")) exceptionnelAppend({ date: "", temple: "", sallehumide: "", heure: "" });
 
-  if (!isEmptyLastField(oneLogeBooking, "suppression", "", new Date()))
-    suppressionAppend({ date: "" });
+  if (!isEmptyLastField(oneLogeBooking, "suppression", "", new Date())) suppressionAppend({ date: "" });
 };

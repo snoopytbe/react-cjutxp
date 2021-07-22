@@ -1,14 +1,11 @@
 import moment from "moment";
 
 export function nthDay(dt, day, number) {
-  // Retourne le nième jour du mois de la date dt
-  // dt : date
+  // Retourne le nième jour du mois par rapport à la date dt
+  // dt : date de référence
   // day : jour de la semaine
   // number : numero du jour = nieme
-  var firstDay = dt
-    .clone()
-    .date(1)
-    .day(day);
+  var firstDay = dt.clone().date(1).day(day);
   // Si firstDay est le mois précédent il faut décaler firstDay d'une semaine
   if (firstDay.isBefore(dt.startOf("month"))) firstDay.add(7, "days");
   var result = firstDay.clone().add((number - 1) * 7, "days");
@@ -17,14 +14,7 @@ export function nthDay(dt, day, number) {
 }
 
 export function posDateInList(dt, liste) {
-  return dt?.isValid()
-    ? liste.findIndex(
-        item =>
-          dt
-            .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-            .diff(item, "days") === 0
-      )
-    : -1;
+  return dt?.isValid() ? liste.findIndex((item) => dt.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).diff(item, "days") === 0) : -1;
 }
 
 export function dateInList(dt, liste) {
@@ -35,9 +25,7 @@ function estToussaint(dt) {
   // 3e samedi d'octobre
   var debutVacances = nthDay(moment([dt.year(), 9, 1]), 6, 3);
   var finVacances = debutVacances.clone().add(15, "days");
-  return (
-    debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0
-  );
+  return debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0;
 }
 
 function debutVacancesNoel(annee) {
@@ -56,9 +44,7 @@ function estNoel(dt) {
   // Attention le début et la fin des vacances sont sur deux années différentes
   var debutVacances = debutVacancesNoel(dt.year());
   var finVacances = finVacancesNoel(dt.year() - 1);
-  return (
-    debutVacances.diff(dt, "days") <= 0 || finVacances.diff(dt, "days") >= 0
-  );
+  return debutVacances.diff(dt, "days") <= 0 || finVacances.diff(dt, "days") >= 0;
 }
 
 function estFevrier(dt, zone) {
@@ -82,9 +68,7 @@ function estFevrier(dt, zone) {
   var debutVacances = finVacancesNoel(dt.year() - 1).day(6 + (3 + Numero) * 7);
   var finVacances = debutVacances.clone().add(15, "days");
 
-  return (
-    debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0
-  );
+  return debutVacances.diff(dt, "days") <= 0 && finVacances.diff(dt, "days") >= 0;
 }
 
 export function estVacances(dt, zone) {
