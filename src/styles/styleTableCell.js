@@ -12,7 +12,7 @@ const couleurBord = "#3F3F6E";
 const white = "#ffffff";
 const black = "#000000";
 
-export const StyleTableCell = theme => ({
+export const StyleTableCell = (theme) => ({
   root: {
     textAlign: "center",
     border: `1px solid ${white}`,
@@ -24,44 +24,60 @@ export const StyleTableCell = theme => ({
     "&.row": {
       backgroundColor: couleurNumeroJour,
       color: black,
-      border: `1px solid ${couleurBord}`
+      border: `1px solid ${couleurBord}`,
     },
 
     "&.annee": {
       backgroundColor: couleurAnnee,
-      fontSize: "1.5em"
+      fontSize: "1.5em",
     },
     "&.mois": {
       backgroundColor: couleurMois,
-      fontSize: "1.1em"
+      fontSize: "1.1em",
     },
     "&.numerojour": {
       color: black,
       backgroundColor: couleurNumeroJour,
-      borderBottomColor: couleurNumeroJour
+      borderColor: white,
+    },
+    "&.notWhiteRightBorder": {
+      borderRightColor: couleurNumeroJour,
+    },
+    "&.notWhiteLeftBorder": {
+      borderLeftColor: couleurNumeroJour,
     },
     "&.jour": {
       backgroundColor: white,
-      color: black
+      borderColor: "D2D2D2",
+      color: black,
     },
-    "&.description": {
+    "&.descriptionsallehumide": {
+      backgroundColor: white,
+      borderColor: "D2D2D2",
+      color: black,
       textAlign: "left",
-      minWidth: "50px"
+      minWidth: "100px",
+    },
+    "&.descriptiontemple": {
+      backgroundColor: white,
+      borderColor: "D2D2D2",
+      borderRightColor: white,
+      color: black,
+      textAlign: "left",
+      minWidth: "100px",
     },
     "&.dimanche": {
       backgroundColor: couleurDimanche,
-      borderLeftColor: couleurDimanche,
-      borderRightColor: couleurDimanche,
-      color: black
+      borderColor: couleurDimanche,
+      color: black,
     },
     "&.ferie": {
       backgroundColor: couleurJourFerie,
-      borderLeftColor: couleurJourFerie,
-      borderRightColor: couleurJourFerie,
-      color: black
+      borderColor: couleurJourFerie,
+      color: black,
     },
     "&.noDate": {
-      backgroundColor: white
+      backgroundColor: white,
     },
     "&.vacances": {
       maxWidth: "1px",
@@ -69,12 +85,12 @@ export const StyleTableCell = theme => ({
       backgroundColor: couleurVacances,
       borderBottomColor: couleurVacances,
       borderTopColor: couleurVacances,
-      borderRightColor: couleurNumeroJour
+      borderRightColor: couleurNumeroJour,
     },
     "&.bordvacances": {
-      borderRightColor: couleurNumeroJour
-    }
-  }
+      borderRightColor: couleurNumeroJour,
+    },
+  },
 });
 
 export default withStyles(StyleTableCell, { name: "MyTableCell" })(TableCell);

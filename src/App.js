@@ -3,8 +3,6 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { theme } from "./styles/styles";
 import Drawer from "./components/navigation/Drawer";
 import Toolbar from "./components/navigation/Toolbar";
-//import { useAuth0 } from "@auth0/auth0-react";
-//import Loading from "./auth/Loading";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
@@ -14,15 +12,6 @@ Amplify.configure(awsconfig);
 const App = () => {
   const [drawerVisibile, setDrawerVisible] = React.useState(false);
   const [title, setTitle] = React.useState("Tableau des loges");
-  /*   const { isLoading, error } = useAuth0();
-
-  if (error) {
-    return <div>Oops... {error.message}</div>;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  } */
 
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisibile);

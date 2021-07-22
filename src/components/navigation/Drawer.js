@@ -6,18 +6,19 @@ import Drawer from "@material-ui/core/Drawer";
 import Calendrier from "../Calendrier/Calendrier";
 import Occupation from "../Occupation/Occupation";
 import TableauSynthese from "../Synthese/TableauSynthese";
-import { Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Link, Switch, useHistory } from "react-router-dom";
 import { initialValuesComplete } from "../../data/initialValues";
 import { useStyles } from "../../styles/styles";
 
 export default function MyDrawer({ open, onClose, onItemClick }) {
   const classes = useStyles();
+  var history = useHistory();
 
   // permet de stocker, partager et éditer les données des loges entre les pages
   const [logeBooking, setLogeBooking] = React.useState(initialValuesComplete);
 
   return (
-    <>
+    <BrowserRouter history={history}>
       <Drawer
         open={open}
         onClose={onClose}
@@ -45,6 +46,6 @@ export default function MyDrawer({ open, onClose, onItemClick }) {
         />
         <Route path="/Calendrier" render={() => <Calendrier logeBooking={logeBooking} setLogeBooking={setLogeBooking} />} />
       </Switch>
-    </>
+    </BrowserRouter>
   );
 }

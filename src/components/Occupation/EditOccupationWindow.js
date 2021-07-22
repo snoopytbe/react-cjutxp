@@ -3,21 +3,12 @@ import { useForm } from "react-hook-form";
 import { Button, Typography, Grid } from "@material-ui/core";
 import ControllerSelect from "../ReactHookedForm/ControllerSelect";
 import PaperFieldOccupation from "./PaperFieldOccupation";
-import { getOccupationLogeDate, getIdLoge } from "./occupationMethods";
+import { getLogeBookingDate, getIdLoge } from "./occupationMethods";
 import moment from "moment";
 
 // Fenetre permettant de supprimer une occupation des locaux
 export default function EditOccupation(props) {
-  const {
-    logeBooking,
-    setLogeBooking,
-    date,
-    setClose,
-    logesUtilisatrices,
-    typeEdit,
-    limit,
-    highlight
-  } = props;
+  const { logeBooking, setLogeBooking, date, setClose, logesUtilisatrices, typeEdit, limit, highlight } = props;
 
   // Liste des loges
   var listeLoges = [];
@@ -26,10 +17,9 @@ export default function EditOccupation(props) {
   // Entete affiche
   var texteEntete = "";
 
-  var ListeLogesUtilisatrices =
-    logesUtilisatrices?.map(loge => loge.loge) ?? [];
+  var ListeLogesUtilisatrices = logesUtilisatrices?.map((loge) => loge.loge) ?? [];
 
-  var ListeLogesComplete = logeBooking?.map(loge => loge.loge) ?? [];
+  var ListeLogesComplete = logeBooking?.map((loge) => loge.loge) ?? [];
 
   switch (typeEdit) {
     case "reccurent":
@@ -40,21 +30,14 @@ export default function EditOccupation(props) {
 
     case "modify_reccurent":
       field = "modify_reccurent";
-      listeLoges =
-        ListeLogesUtilisatrices.length > 0
-          ? ListeLogesUtilisatrices
-          : ListeLogesComplete;
+      listeLoges = ListeLogesUtilisatrices.length > 0 ? ListeLogesUtilisatrices : ListeLogesComplete;
       texteEntete = "Modification d'une réservation récurrente";
       break;
 
     case "ajout":
       field = "exceptionnel";
       // on ne met dans listeLoges que les loges qui ne font pas partie des logesUtilisatrices
-      logeBooking?.forEach(
-        loge =>
-          logesUtilisatrices?.findIndex(item => item.loge === loge.loge) ===
-            -1 && listeLoges.push(loge.loge)
-      ) ?? [];
+      logeBooking?.forEach((loge) => logesUtilisatrices?.findIndex((item) => item.loge === loge.loge) === -1 && listeLoges.push(loge.loge)) ?? [];
       texteEntete = "Ajout de réservation";
       break;
 
@@ -66,10 +49,7 @@ export default function EditOccupation(props) {
 
     case "suppression":
       field = "suppression";
-      listeLoges =
-        ListeLogesUtilisatrices.length > 0
-          ? ListeLogesUtilisatrices
-          : ListeLogesComplete;
+      listeLoges = ListeLogesUtilisatrices.length > 0 ? ListeLogesUtilisatrices : ListeLogesComplete;
       texteEntete = "Suppression de réservation";
       break;
 
@@ -77,7 +57,7 @@ export default function EditOccupation(props) {
       texteEntete = "Erreur";
   }
 
-  const onSubmit = update => {
+  const onSubmit = (update) => {
     var newLogeBooking = logeBooking;
 
     // On récupère l'id de la loge modifiée
@@ -90,38 +70,24 @@ export default function EditOccupation(props) {
     switch (field) {
       case "exceptionnel":
       case "modify_reccurent":
-        let occupation = getOccupationLogeDate(
-          logeBooking,
-          update.loge,
-          shortcut.date
-        );
+        let occupation = getLogeBookingDate(logeBooking, update.loge, shortcut.date);
 
-        isError =
-          shortcut.temple === occupation?.temple &&
-          shortcut.sallehumide === occupation?.sallehumide &&
-          shortcut.heure === occupation?.heure;
+        isError = shortcut.temple === occupation?.temple && shortcut.sallehumide === occupation?.sallehumide && shortcut.heure === occupation?.heure;
 
         setError("loge", {
           type: "manual",
-          message: `Erreur : vous n'avez pas apporté de modification le ${moment(
-            shortcut.date
-          ).format("DD/MM/YYYY")}`
+          message: `Erreur : vous n'avez pas apporté de modification le ${moment(shortcut.date).format("DD/MM/YYYY")}`,
         });
         break;
 
       case "reccurent":
         // On recherche les réservations de la loge
-        let foundLogeBooking = logeBooking[idModified][field].find(
-          item =>
-            item.jours === shortcut.jours && item.semaine === shortcut.semaine
-        );
+        let foundLogeBooking = logeBooking[idModified][field].find((item) => item.jours === shortcut.jours && item.semaine === shortcut.semaine);
         isError = foundLogeBooking ? true : false;
 
         setError("loge", {
           type: "manual",
-          message: `Erreur : il existe déjà une réservation le ${
-            shortcut.semaine
-          } ${shortcut.jours}`
+          message: `Erreur : il existe déjà une réservation le ${shortcut.semaine} ${shortcut.jours}`,
         });
 
         break;
@@ -131,13 +97,12 @@ export default function EditOccupation(props) {
 
     // On ajoute les nouvelles données
     if (!isError) {
-      newLogeBooking[idModified][field] =
-        newLogeBooking[idModified][field] || [];
+      newLogeBooking[idModified][field] = newLogeBooking[idModified][field] || [];
 
       switch (field) {
         case "suppression":
           newLogeBooking[idModified][field].push({
-            date: date
+            date: date,
           });
           break;
 
@@ -147,7 +112,7 @@ export default function EditOccupation(props) {
             semaine: shortcut.semaine,
             temple: shortcut.temple,
             sallehumide: shortcut.sallehumide,
-            heure: shortcut.heure
+            heure: shortcut.heure,
           });
           break;
 
@@ -158,7 +123,7 @@ export default function EditOccupation(props) {
             date: shortcut.date,
             temple: shortcut.temple,
             sallehumide: shortcut.sallehumide,
-            heure: shortcut.heure
+            heure: shortcut.heure,
           });
       }
 
@@ -173,19 +138,12 @@ export default function EditOccupation(props) {
   const [bufferLoge, setBufferLoge] = React.useState("");
   const [bufferDate, setBufferDate] = React.useState("");
 
-  const changeHandler = e => {
-    if (
-      getValues("loge") !== bufferLoge ||
-      getValues(`${field}[0].date`) !== bufferDate
-    ) {
+  const changeHandler = (e) => {
+    if (getValues("loge") !== bufferLoge || getValues(`${field}[0].date`) !== bufferDate) {
       setBufferLoge(getValues("loge"));
       setBufferDate(getValues(`${field}[0].date`));
 
-      let occupation = getOccupationLogeDate(
-        logeBooking,
-        getValues("loge"),
-        getValues(`${field}[0].date`)
-      );
+      let occupation = getLogeBookingDate(logeBooking, getValues("loge"), getValues(`${field}[0].date`));
       setValue(`${field}[0].temple`, occupation?.temple ?? "");
       setValue(`${field}[0].sallehumide`, occupation?.sallehumide ?? "");
       setValue(`${field}[0].heure`, occupation?.heure ?? "");
@@ -203,18 +161,11 @@ export default function EditOccupation(props) {
       jour: "",
       temple: "",
       sallehumide: "",
-      heure: ""
-    }
+      heure: "",
+    },
   ];
 
-  const {
-    control,
-    handleSubmit,
-    getValues,
-    setValue,
-    setError,
-    errors
-  } = useForm({});
+  const { control, handleSubmit, getValues, setValue, setError, errors } = useForm({});
 
   return (
     <div style={{ flexGrow: 1 }}>
@@ -242,29 +193,15 @@ export default function EditOccupation(props) {
         />
 
         <Typography variant="h6" />
-        <Grid
-          direction="row"
-          justify="flex-end"
-          alignItems="center"
-          spacing={3}
-          container
-        >
-          <Grid item>
-            {errors.loge && (
-              <Typography variant="subtitle1">{errors.loge.message}</Typography>
-            )}
-          </Grid>
+        <Grid direction="row" justify="flex-end" alignItems="center" spacing={3} container>
+          <Grid item>{errors.loge && <Typography variant="subtitle1">{errors.loge.message}</Typography>}</Grid>
           <Grid item>
             <Button variant="contained" color="primary" type="submit">
               Valider
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setClose(true)}
-            >
+            <Button variant="contained" color="primary" onClick={() => setClose(true)}>
               Annuler
             </Button>
           </Grid>

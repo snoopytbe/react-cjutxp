@@ -1,5 +1,5 @@
 import React from "react";
-import { annee, mois, zone, periodesInterdites } from "../../data/constantes";
+import { annee, mois, zone, periodesInterdites, temples, salleshumides } from "../../data/constantes";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Table from "@material-ui/core/Table";
@@ -11,8 +11,8 @@ import moment from "moment";
 import TableCell from "../../styles/styleTableCell";
 import "moment/min/locales.min";
 import { estFerie } from "./jourFeries";
-import { estVacances, dateInList } from "./vacances";
-import { getListeDates } from "../Occupation/occupationMethods";
+import { estVacances, posDateInList } from "./vacances";
+import { getListeReservationWithDate } from "../Occupation/occupationMethods";
 import DialogAddOccupation from "../Occupation/DialogAddOccupation";
 
 export default function Calendrier(props) {
@@ -55,7 +55,7 @@ export default function Calendrier(props) {
     setOpen(true);
   };
 
-  const datesLogeBooking = logeBooking.map((item) => getListeDates(item));
+  const datesLogeBooking = logeBooking.map((item) => getListeReservationWithDate(item));
 
   function estSansReservation(myDate) {
     let result = false;
@@ -74,14 +74,21 @@ export default function Calendrier(props) {
     if (estSansReservation(myDate)) return result;
 
     // On parcourt l'ensemble des loges
-    logeBooking?.forEach(
-      (loge, index) =>
-        // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
-        dateInList(
-          myDate,
-          datesLogeBooking[index].map((item) => item.date)
-        ) && result.push({ acronyme: loge.acronyme, loge: loge.loge })
-    );
+    logeBooking?.forEach((loge, index) => {
+      // Si la date actuelle fait partie de la liste des dates d'occupation de la loge on l'ajoute au résultat
+      var pos = posDateInList(
+        myDate,
+        datesLogeBooking[index].map((item) => item.date)
+      );
+      if (pos >= 0) {
+        result.push({
+          loge: loge.loge,
+          acronyme: loge.acronyme,
+          temple: datesLogeBooking[index][pos].reservation.temple,
+          sallehumide: datesLogeBooking[index][pos].reservation.sallehumide,
+        });
+      }
+    });
     return result;
   }
 
@@ -103,11 +110,32 @@ export default function Calendrier(props) {
     });
   }
 
-  function txtCelluleOccupation(myDate) {
+  function txtCelluleOccupationTemple(myDate) {
     // On créé le texte à partir de la liste des occupations
-    return listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
-      return prev + (prev !== "" ? " / " : "") + act.acronyme;
+    let result0 = listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
+      return act.temple === temples[0] || act.temple === temples[2] ? prev + (prev !== "" ? ", " : "") + act.acronyme : prev;
     }, "");
+    let result = result0 === "" ? "- / " : result0 + " / ";
+    let result1 = listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
+      return act.temple === temples[1] || act.temple === temples[2] ? prev + (prev !== "" ? ", " : "") + act.acronyme : prev;
+    }, "");
+    result = result + (result1 === "" ? "-" : result1);
+    result = result === "- / -" ? "" : result;
+    return result;
+  }
+
+  function txtCelluleOccupationSH(myDate) {
+    // On créé le texte à partir de la liste des occupations
+    let result0 = listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
+      return act.sallehumide === salleshumides[0] || act.sallehumide === salleshumides[2] ? prev + (prev !== "" ? ", " : "") + act.acronyme : prev;
+    }, "");
+    let result = result0 === "" ? "- / " : result0 + " / ";
+    let result1 = listeLogesUtilisatricesDate(myDate).reduce((prev, act) => {
+      return act.sallehumide === salleshumides[1] || act.sallehumide === salleshumides[2] ? prev + (prev !== "" ? ", " : "") + act.acronyme : prev;
+    }, "");
+    result = result + (result1 === "" ? "-" : result1);
+    result = result === "- / -" ? "" : result;
+    return result;
   }
 
   function colonnes(index) {
@@ -129,8 +157,11 @@ export default function Calendrier(props) {
           {/* Initiale du jour */}
           <TableCell className={className}>{isValidDate && myDate.format("dd")[0].toUpperCase()}</TableCell>
           {/* Occupation du temple */}
-          <TableCell className={"description " + className} onContextMenu={(event) => handleDescrClick(event, myDate)}>
-            {isValidDate && txtCelluleOccupation(myDate)}
+          <TableCell className={"descriptionsallehumide " + className} onContextMenu={(event) => handleDescrClick(event, myDate)}>
+            {isValidDate && txtCelluleOccupationSH(myDate)}
+          </TableCell>
+          <TableCell className={"descriptiontemple " + className} onContextMenu={(event) => handleDescrClick(event, myDate)}>
+            {isValidDate && txtCelluleOccupationTemple(myDate)}
           </TableCell>
           {/* Vacances scolaires */}
           <TableCell className={isValidDate ? (estVacances(myDate, zone) ? "vacances" : className + " bordvacances") : "noDate"} />
@@ -143,6 +174,22 @@ export default function Calendrier(props) {
   React.useEffect(() => {
     let newLigne = [];
 
+    let ligneEntete = [];
+    for (let i = 0; i < 11; i++) {
+      ligneEntete = [
+        ...ligneEntete,
+        <>
+          <TableCell colspan={2} className="numerojour">
+            Jour
+          </TableCell>
+          <TableCell className="numerojour">SH Cuisine / SH Jardin</TableCell>
+          <TableCell className="numerojour notWhiteRightBorder">Ramsay (RDC) / Berteaux (ETG)</TableCell>
+          <TableCell className="numerojour notWhiteLeftBorder" />
+        </>,
+      ];
+    }
+    newLigne = [<TableRow>{ligneEntete}</TableRow>];
+
     for (let i = 0; i < 31; i++) newLigne = [...newLigne, <TableRow key={"colonne" + i}>{colonnes(i)}</TableRow>];
 
     setLignes(newLigne);
@@ -154,17 +201,17 @@ export default function Calendrier(props) {
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell className="annee" colSpan={16}>
+              <TableCell className="annee" colSpan={20}>
                 {annee}
               </TableCell>
-              <TableCell className="annee" colSpan={28}>
+              <TableCell className="annee" colSpan={35}>
                 {annee + 1}
               </TableCell>
             </TableRow>
             <TableRow>
               {mois.map((item) => (
                 <React.Fragment key={item.nom}>
-                  <TableCell className="mois" colSpan={4}>
+                  <TableCell className="mois" colSpan={5}>
                     {item.nom}
                   </TableCell>
                 </React.Fragment>

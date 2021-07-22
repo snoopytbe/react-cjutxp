@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
-import { getListeDates, getListeDateFromField } from "./occupationMethods";
+import { getListeReservationWithDate, getListeReservationWithDateFromField } from "./occupationMethods";
 import Calendrier from "../Calendrier/Calendrier";
 import { useHistory } from "react-router-dom";
 import DialogAddOccupation from "./DialogAddOccupation";
@@ -17,18 +17,16 @@ export default function Occupation(props) {
   const [limit, setLimit] = React.useState([]);
 
   // Liste des dates avec une réservation
-  const [listeDates, setListeDates] = React.useState(
-    getListeDates(logeBooking[id])
-  );
+  const [listeDates, setListeDates] = React.useState(getListeReservationWithDate(logeBooking[id]));
 
   // Création du formulaire initialisé avec les données de la loge
   const { control, handleSubmit, register, getValues, reset } = useForm({
-    defaultValues: logeBooking[id]
+    defaultValues: logeBooking[id],
   });
 
   const onChangeHandler = () => {
     // Mise à jour suite au changement
-    setListeDates(getListeDates(getValues()));
+    setListeDates(getListeReservationWithDate(getValues()));
   };
 
   // Initialisation lors du chargement
@@ -37,7 +35,7 @@ export default function Occupation(props) {
   }, []);
 
   // Lors de la validation du formulaire mise à jour de LogeBooking
-  const onSubmit = update => {
+  const onSubmit = (update) => {
     let newLogeBooking = logeBooking;
     newLogeBooking[id] = update;
     setLogeBooking(newLogeBooking);
@@ -48,7 +46,7 @@ export default function Occupation(props) {
     () => (
       <Calendrier
         logeBooking={[getValues()]}
-        setLogeBooking={value => {
+        setLogeBooking={(value) => {
           reset(value[0]);
           onChangeHandler();
         }}
@@ -64,36 +62,33 @@ export default function Occupation(props) {
       title: "Réservations régulières",
       typeEdit: "reccurent",
       limit: [],
-      highlight: []
+      highlight: [],
     },
     modify_reccurent: {
       title: "Modifications exceptionnelles",
       typeEdit: "modify_reccurent",
-      limit: getListeDateFromField(getValues(), "reccurent"),
-      highlight: listeDates
+      limit: getListeReservationWithDateFromField(getValues(), "reccurent"),
+      highlight: listeDates,
     },
     exceptionnel: {
       title: "Réservations exceptionnelles",
       typeEdit: "ajout",
-      limit: getListeDates(getValues(), true),
-      highlight: listeDates
+      limit: getListeReservationWithDate(getValues(), true),
+      highlight: listeDates,
     },
     suppression: {
       title: "Suppression exceptionnelle de réservation",
       typeEdit: "suppression",
       limit: listeDates,
-      highlight: listeDates
-    }
+      highlight: listeDates,
+    },
   };
 
   Object.keys(fieldArrays)?.map(
-    field =>
-      ({
-        fields: fieldArrays[field].fields,
-        remove: fieldArrays[field].remove
-      } = useFieldArray({
+    (field) =>
+      ({ fields: fieldArrays[field].fields, remove: fieldArrays[field].remove } = useFieldArray({
         control,
-        name: field
+        name: field,
       }))
   );
 
@@ -108,45 +103,24 @@ export default function Occupation(props) {
     fieldArrays: fieldArrays,
     onChangeHandler: onChangeHandler,
     onClickAdd: onClickAdd,
-    control: control
+    control: control,
   };
 
   return (
     <div style={{ flexGrow: 1 }}>
       <Typography variant="h4">Réservations</Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        onClick={() => history.push("/")}
-      >
+      <Button variant="contained" color="primary" size="small" onClick={() => history.push("/")}>
         Retour au tableau de synthèse
       </Button>
       <br />
       <br />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          name="loge"
-          required
-          defaultValue=""
-          label="Nom de la loge"
-          fullWidth
-          inputRef={register}
-        />
+        <TextField name="loge" required defaultValue="" label="Nom de la loge" fullWidth inputRef={register} />
 
-        <TextField
-          name="acronyme"
-          required
-          defaultValue=""
-          label="Trigramme"
-          fullWidth
-          inputRef={register}
-        />
+        <TextField name="acronyme" required defaultValue="" label="Trigramme" fullWidth inputRef={register} />
 
-        {Object.keys(fieldArrays)?.map(field => {
-          return (
-            <FieldComponent {...commonFieldComponentProps} field={field} />
-          );
+        {Object.keys(fieldArrays)?.map((field) => {
+          return <FieldComponent {...commonFieldComponentProps} field={field} />;
         })}
 
         <Typography variant="h6" />
@@ -158,7 +132,7 @@ export default function Occupation(props) {
         handleClose={() => setOpen(false)}
         handleRendered={() => {}}
         logeBooking={[getValues()]}
-        setLogeBooking={value => {
+        setLogeBooking={(value) => {
           reset(value[0]);
           onChangeHandler();
         }}
