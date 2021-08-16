@@ -70,7 +70,7 @@ export default function EditOccupation(props) {
     switch (field) {
       case "exceptionnel":
       case "modify_reccurent":
-        let occupation = getLogeBookingDate(logeBooking, update.loge, shortcut.date);
+        var occupation = getLogeBookingDate(logeBooking, update.loge, shortcut.date);
 
         isError = shortcut.temple === occupation?.temple && shortcut.sallehumide === occupation?.sallehumide && shortcut.heure === occupation?.heure;
 
@@ -82,7 +82,7 @@ export default function EditOccupation(props) {
 
       case "reccurent":
         // On recherche les réservations de la loge
-        let foundLogeBooking = logeBooking[idModified][field].find((item) => item.jours === shortcut.jours && item.semaine === shortcut.semaine);
+        var foundLogeBooking = logeBooking[idModified][field].find((item) => item.jours === shortcut.jours && item.semaine === shortcut.semaine);
         isError = foundLogeBooking ? true : false;
 
         setError("loge", {
@@ -138,7 +138,7 @@ export default function EditOccupation(props) {
   const [bufferLoge, setBufferLoge] = React.useState("");
   const [bufferDate, setBufferDate] = React.useState("");
 
-  const changeHandler = (e) => {
+  const changeHandler = () => {
     if (getValues("loge") !== bufferLoge || getValues(`${field}[0].date`) !== bufferDate) {
       setBufferLoge(getValues("loge"));
       setBufferDate(getValues(`${field}[0].date`));

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import * as constantes from "../../data/constantes";
 import moment from "moment";
 import "moment/min/locales.min";
@@ -182,7 +183,7 @@ export const texteReservations = (oneLogeBooking) => {
 // Cette fonction permet de regarder si le dernier champs est vide
 // retourne un booléen
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export function isEmptyLastField(oneLogeBooking, fieldName, exception = "", nullValue = "") {
+export function isEmptyLastField(oneLogeBooking, fieldName, exception = "") {
   var result = false;
 
   if (oneLogeBooking.hasOwnProperty(fieldName)) {

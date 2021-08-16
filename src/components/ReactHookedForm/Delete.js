@@ -2,7 +2,7 @@ import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 export default function Delete(props) {
-  const { maxIndex, removeHandler, index } = props;
+  const { removeHandler, index } = props;
 
   return (
     <div>
