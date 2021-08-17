@@ -120,7 +120,7 @@ export default function Occupation(props) {
         <TextField name="acronyme" required defaultValue="" label="Trigramme" fullWidth inputRef={register} />
 
         {Object.keys(fieldArrays)?.map((field) => {
-          return <FieldComponent {...commonFieldComponentProps} field={field} />;
+          return <FieldComponent {...commonFieldComponentProps} key={field} field={field} />;
         })}
 
         <Typography variant="h6" />

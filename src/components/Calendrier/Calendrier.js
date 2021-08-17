@@ -188,7 +188,7 @@ export default function Calendrier(props) {
         </>,
       ];
     }
-    newLigne = [<TableRow>{ligneEntete}</TableRow>];
+    newLigne = [<TableRow key={'entete'}>{ligneEntete}</TableRow>];
 
     for (let i = 0; i < 31; i++) newLigne = [...newLigne, <TableRow key={"colonne" + i}>{colonnes(i)}</TableRow>];
 

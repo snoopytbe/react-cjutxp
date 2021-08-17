@@ -5,7 +5,11 @@ import Drawer from "./components/navigation/Drawer";
 import Toolbar from "./components/navigation/Toolbar";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
-import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+import {
+  withAuthenticator,
+  AmplifySignOut,
+  graphqlOperation,
+} from "@aws-amplify/ui-react";
 
 Amplify.configure(awsconfig);
 
@@ -27,7 +31,11 @@ const App = () => {
       <AmplifySignOut />
       <ThemeProvider theme={theme}>
         <Toolbar title={title} onMenuClick={toggleDrawer} />
-        <Drawer open={drawerVisibile} onClose={toggleDrawer} onItemClick={onItemClick} />
+        <Drawer
+          open={drawerVisibile}
+          onClose={toggleDrawer}
+          onItemClick={onItemClick}
+        />
       </ThemeProvider>
     </div>
   );

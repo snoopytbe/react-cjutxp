@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from "react";
 import Button from "@material-ui/core/Button";
 import { DataGrid, GridToolbar, frFR } from "@material-ui/data-grid";

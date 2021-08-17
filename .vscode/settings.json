@@ -9,7 +9,6 @@
     "amplify/backend/awscloudformation": true
   },
   "githubIssues.queries": [
-  
     {
       "label": "My Issues",
       "query": "default"

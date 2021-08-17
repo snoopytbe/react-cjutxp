@@ -1,0 +1,30 @@
+type occupation @model {
+  id: ID!
+  loge: String!
+  acronyme: String!
+  recurrent: [ReservationReccurrente] @connection(keyName: "byOccupation", fields: ["id"])
+  exceptionnel: [Exception] @connection(keyName: "byOccupation", fields: ["id"])
+  suppression: [Exception] @connection(keyName: "byOccupation", fields: ["id"])
+  modify_reccurent: [Exception] @connection(keyName: "byOccupation", fields: ["id"])
+}
+
+type ReservationReccurrente @model 
+  @key(name: "byOccupation", fields: ["occupationID"]) {
+  id: ID!
+  occupationID : ID!
+  semaine: String!
+  jour: String!
+  temple: String!
+  sallehumide: String!
+  heure: String!
+} 
+
+type Exception @model
+  @key(name: "byOccupation", fields: ["occupationID"]) {
+  id: ID!
+  occupationID : ID!
+  date: String!
+  temple: String!
+  sallehumide: String!
+  heure: String!
+} 
